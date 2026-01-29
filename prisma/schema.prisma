@@ -6,31 +6,140 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  CUSTOMER
+  PROVIDER
+  ADMIN
+}
 
 model User {
-    id            String    @id
-    name          String
-    email         String
-    emailVerified Boolean   @default(false)
-    image         String?
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
-    sessions      Session[]
-    accounts      Account[]
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
 
-    role   String? @default("USER")
-    phone  String?
-    status String? @default("ACTIVE")
+  role             Role
+  phone            String?
+  status           String?           @default("ACTIVE")
+  providerProfiles ProviderProfiles?
+  orders           Orders[]
+  reviews          Reviews[]
 
-    @@unique([email])
-    @@map("user")
+  @@unique([email])
+  @@map("user")
+}
+
+model ProviderProfiles {
+  id             String    @id
+  userId         String    @unique
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurantName String
+  address        String
+  city           String
+  country        String
+  postalCode     String?
+  phoneNumber    String?
+  website        String?
+  description    String?
+  rating         Float?    @default(0.0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  meals          Meals[]
+  orders         Orders[]
+  reviews        Reviews[]
+
+  @@map("provider_profiles")
+}
+
+model Meals {
+  id          String           @id
+  name        String
+  providerId  String
+  provider    ProviderProfiles @relation(fields: [providerId], references: [id])
+  description String
+  price       Float
+  category    Category         @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  orders      Orders[]
+
+  @@map("meals")
+}
+
+model Orders {
+  id         String           @id
+  userId     String
+  user       User             @relation(fields: [userId], references: [id])
+  providerId String
+  provider   ProviderProfiles @relation(fields: [providerId], references: [id])
+  mealId     String
+  meal       Meals            @relation(fields: [mealId], references: [id])
+  quantity   Int
+  totalPrice Float
+  status     OrderStatus      @default(PLACED)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  reviews    Reviews[]
+
+  @@map("orders")
+}
+
+model Reviews {
+  id         String           @id
+  userId     String
+  user       User             @relation(fields: [userId], references: [id])
+  providerId String
+  provider   ProviderProfiles @relation(fields: [providerId], references: [id])
+  orderId    String
+  order      Orders           @relation(fields: [orderId], references: [id])
+  rating     Int
+  comment    String?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@map("reviews")
+}
+
+enum OrderStatus {
+  PLACED
+  PREPARING
+  READY
+  CANCELLED
+  DELIVERED
+}
+
+model Category {
+  id          String      @id
+  cuisineType CuisineType @default(OTHER)
+  meals       Meals[]
+
+  @@map("category")
+}
+
+enum CuisineType {
+  ITALIAN
+  MEXICAN
+  CHINESE
+  JAPANESE
+  INDIAN
+  AMERICAN
+  FRENCH
+  GREEK
+  ETHIOPIAN
+  OTHER
 }
 
 model Session {
