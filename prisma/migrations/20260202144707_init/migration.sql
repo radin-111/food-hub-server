@@ -2,13 +2,10 @@
 CREATE TYPE "Role" AS ENUM ('CUSTOMER', 'PROVIDER', 'ADMIN');
 
 -- CreateEnum
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PLACED', 'PREPARING', 'READY', 'CANCELLED', 'DELIVERED');
+
+-- CreateEnum
 CREATE TYPE "ProviderStatus" AS ENUM ('ACTIVE', 'INACTIVE', 'PENDING');
-
--- CreateEnum
-CREATE TYPE "OrderStatus" AS ENUM ('PLACED', 'PREPARING', 'READY', 'CANCELLED', 'DELIVERED');
-
--- CreateEnum
-CREATE TYPE "CuisineType" AS ENUM ('ITALIAN', 'MEXICAN', 'CHINESE', 'JAPANESE', 'INDIAN', 'AMERICAN', 'FRENCH', 'GREEK', 'ETHIOPIAN', 'OTHER');
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -68,7 +65,7 @@ CREATE TABLE "orders" (
     "mealId" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
     "totalPrice" DOUBLE PRECISION NOT NULL,
-    "status" "OrderStatus" NOT NULL DEFAULT 'PLACED',
+    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -93,7 +90,7 @@ CREATE TABLE "reviews" (
 -- CreateTable
 CREATE TABLE "category" (
     "id" TEXT NOT NULL,
-    "cuisineType" "CuisineType" NOT NULL DEFAULT 'OTHER',
+    "cuisineType" TEXT NOT NULL,
 
     CONSTRAINT "category_pkey" PRIMARY KEY ("id")
 );

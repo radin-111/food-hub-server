@@ -18,16 +18,8 @@ export const Role = {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
-export const ProviderStatus = {
-  ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
-  PENDING: 'PENDING'
-} as const
-
-export type ProviderStatus = (typeof ProviderStatus)[keyof typeof ProviderStatus]
-
-
 export const OrderStatus = {
+  PENDING: 'PENDING',
   PLACED: 'PLACED',
   PREPARING: 'PREPARING',
   READY: 'READY',
@@ -36,3 +28,12 @@ export const OrderStatus = {
 } as const
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+
+export const ProviderStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  PENDING: 'PENDING'
+} as const
+
+export type ProviderStatus = (typeof ProviderStatus)[keyof typeof ProviderStatus]

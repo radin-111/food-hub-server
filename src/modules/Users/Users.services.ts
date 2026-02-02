@@ -1,3 +1,4 @@
+import { Role } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
 const getAllUsers = async (page: number) => {
@@ -22,6 +23,20 @@ const getAllUsers = async (page: number) => {
     };
 };
 
+
+const updateUserRole = async (id: string, role: Role) => {
+    const result = await prisma.user.update({
+        where: {
+            id,
+        },
+        data: {
+            role,
+        },
+    });
+    return result;
+};
+
 export const userServices={
-    getAllUsers
+    getAllUsers,
+    updateUserRole,
 }

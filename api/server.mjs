@@ -17,7 +17,7 @@ var config = {
   "clientVersion": "7.3.0",
   "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
-  "inlineSchema": '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nenum Role {\n  CUSTOMER\n  PROVIDER\n  ADMIN\n}\n\nmodel User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  role             Role              @default(CUSTOMER)\n  phone            String?\n  status           String?           @default("ACTIVE")\n  providerProfiles ProviderProfiles?\n  orders           Orders[]\n  reviews          Reviews[]\n\n  @@unique([email])\n  @@map("user")\n}\n\nenum ProviderStatus {\n  ACTIVE\n  INACTIVE\n  PENDING\n}\n\nmodel ProviderProfiles {\n  id             String         @id @default(uuid())\n  userId         String         @unique\n  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)\n  restaurantName String\n  address        String\n  city           String\n  country        String\n  postalCode     String\n  isActive       ProviderStatus @default(PENDING)\n  phoneNumber    String\n  website        String?\n  description    String\n  rating         Float?         @default(0.0)\n  createdAt      DateTime       @default(now())\n  updatedAt      DateTime       @updatedAt\n  meals          Meals[]\n  orders         Orders[]\n  reviews        Reviews[]\n\n  @@map("provider_profiles")\n}\n\nmodel Meals {\n  id          String           @id @default(uuid())\n  name        String\n  providerId  String\n  provider    ProviderProfiles @relation(fields: [providerId], references: [id])\n  description String\n  price       Float\n  category    Category         @relation(fields: [categoryId], references: [id])\n  categoryId  String\n  createdAt   DateTime         @default(now())\n  updatedAt   DateTime         @updatedAt\n  orders      Orders[]\n  reviews     Reviews[]\n\n  @@map("meals")\n}\n\nmodel Orders {\n  id         String           @id @default(uuid())\n  userId     String\n  user       User             @relation(fields: [userId], references: [id])\n  providerId String\n  provider   ProviderProfiles @relation(fields: [providerId], references: [id])\n  mealId     String\n  meal       Meals            @relation(fields: [mealId], references: [id])\n  quantity   Int\n  totalPrice Float\n  status     OrderStatus      @default(PLACED)\n  createdAt  DateTime         @default(now())\n  updatedAt  DateTime         @updatedAt\n  reviews    Reviews[]\n\n  @@map("orders")\n}\n\nmodel Reviews {\n  id                 String            @id @default(uuid())\n  userId             String\n  user               User              @relation(fields: [userId], references: [id])\n  mealId             String\n  meal               Meals             @relation(fields: [mealId], references: [id])\n  orderId            String\n  order              Orders            @relation(fields: [orderId], references: [id])\n  rating             Int\n  comment            String?\n  createdAt          DateTime          @default(now())\n  updatedAt          DateTime          @updatedAt\n  providerProfiles   ProviderProfiles? @relation(fields: [providerProfilesId], references: [id])\n  providerProfilesId String?\n\n  @@map("reviews")\n}\n\nenum OrderStatus {\n  PLACED\n  PREPARING\n  READY\n  CANCELLED\n  DELIVERED\n}\n\nmodel Category {\n  id          String  @id\n  cuisineType String\n  meals       Meals[]\n\n  @@map("category")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n',
+  "inlineSchema": '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nenum Role {\n  CUSTOMER\n  PROVIDER\n  ADMIN\n}\n\nenum OrderStatus {\n  PENDING\n  PLACED\n  PREPARING\n  READY\n  CANCELLED\n  DELIVERED\n}\n\nmodel User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  role             Role              @default(CUSTOMER)\n  phone            String?\n  status           String?           @default("ACTIVE")\n  providerProfiles ProviderProfiles?\n  orders           Orders[]\n  reviews          Reviews[]\n\n  @@unique([email])\n  @@map("user")\n}\n\nenum ProviderStatus {\n  ACTIVE\n  INACTIVE\n  PENDING\n}\n\nmodel ProviderProfiles {\n  id             String         @id @default(uuid())\n  userId         String         @unique\n  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)\n  restaurantName String\n  address        String\n  city           String\n  country        String\n  postalCode     String\n  isActive       ProviderStatus @default(PENDING)\n  phoneNumber    String\n  website        String?\n  description    String\n  rating         Float?         @default(0.0)\n  createdAt      DateTime       @default(now())\n  updatedAt      DateTime       @updatedAt\n  meals          Meals[]\n  orders         Orders[]\n  reviews        Reviews[]\n\n  @@map("provider_profiles")\n}\n\nmodel Meals {\n  id          String           @id @default(uuid())\n  name        String\n  providerId  String\n  provider    ProviderProfiles @relation(fields: [providerId], references: [id])\n  description String\n  price       Float\n  category    Category         @relation(fields: [categoryId], references: [id])\n  categoryId  String\n  createdAt   DateTime         @default(now())\n  updatedAt   DateTime         @updatedAt\n  orders      Orders[]\n  reviews     Reviews[]\n\n  @@map("meals")\n}\n\nmodel Orders {\n  id         String           @id @default(uuid())\n  userId     String\n  user       User             @relation(fields: [userId], references: [id])\n  providerId String\n  provider   ProviderProfiles @relation(fields: [providerId], references: [id])\n  mealId     String\n  meal       Meals            @relation(fields: [mealId], references: [id])\n  quantity   Int\n  totalPrice Float\n  status     OrderStatus      @default(PENDING)\n  createdAt  DateTime         @default(now())\n  updatedAt  DateTime         @updatedAt\n  reviews    Reviews[]\n\n  @@map("orders")\n}\n\nmodel Reviews {\n  id                 String            @id @default(uuid())\n  userId             String\n  user               User              @relation(fields: [userId], references: [id])\n  mealId             String\n  meal               Meals             @relation(fields: [mealId], references: [id])\n  orderId            String\n  order              Orders            @relation(fields: [orderId], references: [id])\n  rating             Int\n  comment            String?\n  createdAt          DateTime          @default(now())\n  updatedAt          DateTime          @updatedAt\n  providerProfiles   ProviderProfiles? @relation(fields: [providerProfilesId], references: [id])\n  providerProfilesId String?\n\n  @@map("reviews")\n}\n\nmodel Category {\n  id          String  @id\n  cuisineType String\n  meals       Meals[]\n\n  @@map("category")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n',
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -326,14 +326,8 @@ var createProviderProfiles = async (profileData) => {
   });
   return result;
 };
-var createMeals = async (data) => {
-  const result = await prisma.meals.create({
-    data
-  });
-  return result;
-};
-var updateMeals = async (id, data) => {
-  const result = await prisma.meals.update({
+var updateProviderProfiles = async (id, data) => {
+  const result = await prisma.providerProfiles.update({
     where: {
       id
     },
@@ -341,19 +335,9 @@ var updateMeals = async (id, data) => {
   });
   return result;
 };
-var deleteMeals = async (id) => {
-  const result = await prisma.meals.delete({
-    where: {
-      id
-    }
-  });
-  return result;
-};
 var providerProfilesServices = {
   createProviderProfiles,
-  createMeals,
-  updateMeals,
-  deleteMeals
+  updateProviderProfiles
 };
 
 // src/modules/ProviderProfiles/ProviderProfiles.controller.ts
@@ -374,48 +358,14 @@ var createProviderProfiles2 = async (req, res) => {
     });
   }
 };
-var createMeals2 = async (req, res) => {
-  const meals = req.body;
-  const result = await providerProfilesServices.createMeals(meals);
-  try {
-    res.status(201).json({
-      success: true,
-      message: "Meals created successfully",
-      data: result
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error
-    });
-  }
-};
-var updateMeals2 = async (req, res) => {
+var updateProviderProfiles2 = async (req, res) => {
   const { id } = req.params;
-  const meals = req.body;
-  const result = await providerProfilesServices.updateMeals(id, meals);
+  const providerProfile = req.body;
+  const result = await providerProfilesServices.updateProviderProfiles(id, providerProfile);
   try {
     res.status(201).json({
       success: true,
-      message: "Meals updated successfully",
-      data: result
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error
-    });
-  }
-};
-var deleteMeals2 = async (req, res) => {
-  const { id } = req.params;
-  const result = await providerProfilesServices.deleteMeals(id);
-  try {
-    res.status(201).json({
-      success: true,
-      message: "Meals deleted successfully",
+      message: "Provider profile updated successfully",
       data: result
     });
   } catch (error) {
@@ -428,17 +378,13 @@ var deleteMeals2 = async (req, res) => {
 };
 var ProviderProfilesController = {
   createProviderProfiles: createProviderProfiles2,
-  createMeals: createMeals2,
-  updateMeals: updateMeals2,
-  deleteMeals: deleteMeals2
+  updateProviderProfiles: updateProviderProfiles2
 };
 
 // src/modules/ProviderProfiles/ProviderProfiles.routes.ts
 var router = Router();
 router.post("/", ProviderProfilesController.createProviderProfiles);
-router.post("/meals", ProviderProfilesController.createMeals);
-router.patch("/meals/:id", ProviderProfilesController.updateMeals);
-router.delete("/meals/:id", ProviderProfilesController.deleteMeals);
+router.patch("/:id", ProviderProfilesController.updateProviderProfiles);
 var ProviderProfilesRoutes = router;
 
 // src/modules/Users/Users.routes.ts
@@ -532,6 +478,105 @@ var router2 = Router2();
 router2.get("/", auth_default("ADMIN" /* ADMIN */), userControllers.getAllUsers);
 var UsersRoutes = router2;
 
+// src/modules/Meals/Meals.routes.ts
+import { Router as Router3 } from "express";
+
+// src/modules/Meals/Meals.services.ts
+var createMeals = async (meal) => {
+  const result = await prisma.meals.create({
+    data: meal
+  });
+  return result;
+};
+var updateMeals = async (id, updatedData) => {
+  const result = await prisma.meals.update({
+    where: {
+      id
+    },
+    data: updatedData
+  });
+  return result;
+};
+var deleteMeals = async (id) => {
+  const result = await prisma.meals.delete({
+    where: {
+      id
+    }
+  });
+  return result;
+};
+var MealsServices = {
+  createMeals,
+  updateMeals,
+  deleteMeals
+};
+
+// src/modules/Meals/Meals.controller.ts
+var createMeals2 = async (req, res) => {
+  const meal = req.body;
+  try {
+    const result = await MealsServices.createMeals(meal);
+    res.status(201).json({
+      success: true,
+      message: "Meals created successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var updateMeals2 = async (req, res) => {
+  const { id } = req.params;
+  const meal = req.body;
+  try {
+    const result = await MealsServices.updateMeals(id, meal);
+    res.status(201).json({
+      success: true,
+      message: "Meals updated successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var deleteMeals2 = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await MealsServices.deleteMeals(id);
+    res.status(201).json({
+      success: true,
+      message: "Meals deleted successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var MealsController = {
+  createMeals: createMeals2,
+  updateMeals: updateMeals2,
+  deleteMeals: deleteMeals2
+};
+
+// src/modules/Meals/Meals.routes.ts
+var router3 = Router3();
+router3.post("/meals", MealsController.createMeals);
+router3.patch("/meals/:id", MealsController.updateMeals);
+router3.delete("/meals/:id", MealsController.deleteMeals);
+var MealsRoutes = router3;
+
 // src/app.ts
 var app = express();
 app.use(
@@ -544,6 +589,7 @@ app.use(express.json());
 app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use("/provider", ProviderProfilesRoutes);
 app.use("/users", UsersRoutes);
+app.use("/meals", MealsRoutes);
 app.get("/", (req, res) => {
   res.send("We are cooking foods.");
 });

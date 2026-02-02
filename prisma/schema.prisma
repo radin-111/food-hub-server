@@ -18,7 +18,14 @@ enum Role {
   PROVIDER
   ADMIN
 }
-
+enum OrderStatus {
+  PENDING
+  PLACED
+  PREPARING
+  READY
+  CANCELLED
+  DELIVERED
+}
 model User {
   id            String    @id
   name          String
@@ -97,7 +104,7 @@ model Orders {
   meal       Meals            @relation(fields: [mealId], references: [id])
   quantity   Int
   totalPrice Float
-  status     OrderStatus      @default(PLACED)
+  status     OrderStatus      @default(PENDING)
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
   reviews    Reviews[]
@@ -123,13 +130,7 @@ model Reviews {
   @@map("reviews")
 }
 
-enum OrderStatus {
-  PLACED
-  PREPARING
-  READY
-  CANCELLED
-  DELIVERED
-}
+
 
 model Category {
   id          String  @id
