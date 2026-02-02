@@ -234,7 +234,7 @@ export const auth = betterAuth({
   cookie: {
     secure: true,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
     path: "/",
   },
 });
