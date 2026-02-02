@@ -30,7 +30,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role             Role
+  role             Role              @default(CUSTOMER)
   phone            String?
   status           String?           @default("ACTIVE")
   providerProfiles ProviderProfiles?
@@ -41,21 +41,28 @@ model User {
   @@map("user")
 }
 
+enum ProviderStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
 model ProviderProfiles {
-  id             String    @id
-  userId         String    @unique
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String         @id @default(uuid())
+  userId         String         @unique
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   restaurantName String
   address        String
   city           String
   country        String
-  postalCode     String?
-  phoneNumber    String?
+  postalCode     String
+  isActive       ProviderStatus @default(PENDING)
+  phoneNumber    String
   website        String?
-  description    String?
-  rating         Float?    @default(0.0)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  description    String
+  rating         Float?         @default(0.0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   meals          Meals[]
   orders         Orders[]
   reviews        Reviews[]
@@ -64,7 +71,7 @@ model ProviderProfiles {
 }
 
 model Meals {
-  id          String           @id
+  id          String           @id @default(uuid())
   name        String
   providerId  String
   provider    ProviderProfiles @relation(fields: [providerId], references: [id])
@@ -75,12 +82,13 @@ model Meals {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   orders      Orders[]
+  reviews     Reviews[]
 
   @@map("meals")
 }
 
 model Orders {
-  id         String           @id
+  id         String           @id @default(uuid())
   userId     String
   user       User             @relation(fields: [userId], references: [id])
   providerId String
@@ -98,17 +106,19 @@ model Orders {
 }
 
 model Reviews {
-  id         String           @id
-  userId     String
-  user       User             @relation(fields: [userId], references: [id])
-  providerId String
-  provider   ProviderProfiles @relation(fields: [providerId], references: [id])
-  orderId    String
-  order      Orders           @relation(fields: [orderId], references: [id])
-  rating     Int
-  comment    String?
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
+  id                 String            @id @default(uuid())
+  userId             String
+  user               User              @relation(fields: [userId], references: [id])
+  mealId             String
+  meal               Meals             @relation(fields: [mealId], references: [id])
+  orderId            String
+  order              Orders            @relation(fields: [orderId], references: [id])
+  rating             Int
+  comment            String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  providerProfiles   ProviderProfiles? @relation(fields: [providerProfilesId], references: [id])
+  providerProfilesId String?
 
   @@map("reviews")
 }
@@ -122,24 +132,11 @@ enum OrderStatus {
 }
 
 model Category {
-  id          String      @id
-  cuisineType CuisineType @default(OTHER)
+  id          String  @id
+  cuisineType String
   meals       Meals[]
 
   @@map("category")
-}
-
-enum CuisineType {
-  ITALIAN
-  MEXICAN
-  CHINESE
-  JAPANESE
-  INDIAN
-  AMERICAN
-  FRENCH
-  GREEK
-  ETHIOPIAN
-  OTHER
 }
 
 model Session {

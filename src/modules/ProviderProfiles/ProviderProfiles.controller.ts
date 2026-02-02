@@ -2,8 +2,8 @@ import { type Request, type Response } from "express";
 import { providerProfilesServices } from "./ProviderProfiles.services";
 const createProviderProfiles = async (req: Request, res: Response) => {
   const providerProfile = req.body;
-  const result =
-    await providerProfilesServices.createProviderProfiles(providerProfile);
+  
+  const result =await providerProfilesServices.createProviderProfiles(providerProfile);
   try {
     res.status(201).json({
       success: true,

@@ -42,6 +42,7 @@ export type ProviderProfilesMinAggregateOutputType = {
   city: string | null
   country: string | null
   postalCode: string | null
+  isActive: $Enums.ProviderStatus | null
   phoneNumber: string | null
   website: string | null
   description: string | null
@@ -58,6 +59,7 @@ export type ProviderProfilesMaxAggregateOutputType = {
   city: string | null
   country: string | null
   postalCode: string | null
+  isActive: $Enums.ProviderStatus | null
   phoneNumber: string | null
   website: string | null
   description: string | null
@@ -74,6 +76,7 @@ export type ProviderProfilesCountAggregateOutputType = {
   city: number
   country: number
   postalCode: number
+  isActive: number
   phoneNumber: number
   website: number
   description: number
@@ -100,6 +103,7 @@ export type ProviderProfilesMinAggregateInputType = {
   city?: true
   country?: true
   postalCode?: true
+  isActive?: true
   phoneNumber?: true
   website?: true
   description?: true
@@ -116,6 +120,7 @@ export type ProviderProfilesMaxAggregateInputType = {
   city?: true
   country?: true
   postalCode?: true
+  isActive?: true
   phoneNumber?: true
   website?: true
   description?: true
@@ -132,6 +137,7 @@ export type ProviderProfilesCountAggregateInputType = {
   city?: true
   country?: true
   postalCode?: true
+  isActive?: true
   phoneNumber?: true
   website?: true
   description?: true
@@ -234,10 +240,11 @@ export type ProviderProfilesGroupByOutputType = {
   address: string
   city: string
   country: string
-  postalCode: string | null
-  phoneNumber: string | null
+  postalCode: string
+  isActive: $Enums.ProviderStatus
+  phoneNumber: string
   website: string | null
-  description: string | null
+  description: string
   rating: number | null
   createdAt: Date
   updatedAt: Date
@@ -273,10 +280,11 @@ export type ProviderProfilesWhereInput = {
   address?: Prisma.StringFilter<"ProviderProfiles"> | string
   city?: Prisma.StringFilter<"ProviderProfiles"> | string
   country?: Prisma.StringFilter<"ProviderProfiles"> | string
-  postalCode?: Prisma.StringNullableFilter<"ProviderProfiles"> | string | null
-  phoneNumber?: Prisma.StringNullableFilter<"ProviderProfiles"> | string | null
+  postalCode?: Prisma.StringFilter<"ProviderProfiles"> | string
+  isActive?: Prisma.EnumProviderStatusFilter<"ProviderProfiles"> | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFilter<"ProviderProfiles"> | string
   website?: Prisma.StringNullableFilter<"ProviderProfiles"> | string | null
-  description?: Prisma.StringNullableFilter<"ProviderProfiles"> | string | null
+  description?: Prisma.StringFilter<"ProviderProfiles"> | string
   rating?: Prisma.FloatNullableFilter<"ProviderProfiles"> | number | null
   createdAt?: Prisma.DateTimeFilter<"ProviderProfiles"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProviderProfiles"> | Date | string
@@ -293,10 +301,11 @@ export type ProviderProfilesOrderByWithRelationInput = {
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
   country?: Prisma.SortOrder
-  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
-  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  postalCode?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrder
   rating?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -316,10 +325,11 @@ export type ProviderProfilesWhereUniqueInput = Prisma.AtLeast<{
   address?: Prisma.StringFilter<"ProviderProfiles"> | string
   city?: Prisma.StringFilter<"ProviderProfiles"> | string
   country?: Prisma.StringFilter<"ProviderProfiles"> | string
-  postalCode?: Prisma.StringNullableFilter<"ProviderProfiles"> | string | null
-  phoneNumber?: Prisma.StringNullableFilter<"ProviderProfiles"> | string | null
+  postalCode?: Prisma.StringFilter<"ProviderProfiles"> | string
+  isActive?: Prisma.EnumProviderStatusFilter<"ProviderProfiles"> | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFilter<"ProviderProfiles"> | string
   website?: Prisma.StringNullableFilter<"ProviderProfiles"> | string | null
-  description?: Prisma.StringNullableFilter<"ProviderProfiles"> | string | null
+  description?: Prisma.StringFilter<"ProviderProfiles"> | string
   rating?: Prisma.FloatNullableFilter<"ProviderProfiles"> | number | null
   createdAt?: Prisma.DateTimeFilter<"ProviderProfiles"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ProviderProfiles"> | Date | string
@@ -336,10 +346,11 @@ export type ProviderProfilesOrderByWithAggregationInput = {
   address?: Prisma.SortOrder
   city?: Prisma.SortOrder
   country?: Prisma.SortOrder
-  postalCode?: Prisma.SortOrderInput | Prisma.SortOrder
-  phoneNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  postalCode?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
+  phoneNumber?: Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrder
   rating?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -360,51 +371,54 @@ export type ProviderProfilesScalarWhereWithAggregatesInput = {
   address?: Prisma.StringWithAggregatesFilter<"ProviderProfiles"> | string
   city?: Prisma.StringWithAggregatesFilter<"ProviderProfiles"> | string
   country?: Prisma.StringWithAggregatesFilter<"ProviderProfiles"> | string
-  postalCode?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfiles"> | string | null
-  phoneNumber?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfiles"> | string | null
+  postalCode?: Prisma.StringWithAggregatesFilter<"ProviderProfiles"> | string
+  isActive?: Prisma.EnumProviderStatusWithAggregatesFilter<"ProviderProfiles"> | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringWithAggregatesFilter<"ProviderProfiles"> | string
   website?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfiles"> | string | null
-  description?: Prisma.StringNullableWithAggregatesFilter<"ProviderProfiles"> | string | null
+  description?: Prisma.StringWithAggregatesFilter<"ProviderProfiles"> | string
   rating?: Prisma.FloatNullableWithAggregatesFilter<"ProviderProfiles"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ProviderProfiles"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ProviderProfiles"> | Date | string
 }
 
 export type ProviderProfilesCreateInput = {
-  id: string
+  id?: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProviderProfilesInput
   meals?: Prisma.MealsCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderInput
+  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderProfilesInput
 }
 
 export type ProviderProfilesUncheckedCreateInput = {
-  id: string
+  id?: string
   userId: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   meals?: Prisma.MealsUncheckedCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersUncheckedCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderInput
+  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderProfilesInput
 }
 
 export type ProviderProfilesUpdateInput = {
@@ -413,17 +427,18 @@ export type ProviderProfilesUpdateInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfilesNestedInput
   meals?: Prisma.MealsUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUpdateManyWithoutProviderNestedInput
+  reviews?: Prisma.ReviewsUpdateManyWithoutProviderProfilesNestedInput
 }
 
 export type ProviderProfilesUncheckedUpdateInput = {
@@ -433,29 +448,31 @@ export type ProviderProfilesUncheckedUpdateInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealsUncheckedUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUncheckedUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderNestedInput
+  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderProfilesNestedInput
 }
 
 export type ProviderProfilesCreateManyInput = {
-  id: string
+  id?: string
   userId: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -467,10 +484,11 @@ export type ProviderProfilesUpdateManyMutationInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -483,10 +501,11 @@ export type ProviderProfilesUncheckedUpdateManyInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -505,6 +524,7 @@ export type ProviderProfilesCountOrderByAggregateInput = {
   city?: Prisma.SortOrder
   country?: Prisma.SortOrder
   postalCode?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
   website?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -525,6 +545,7 @@ export type ProviderProfilesMaxOrderByAggregateInput = {
   city?: Prisma.SortOrder
   country?: Prisma.SortOrder
   postalCode?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
   website?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -541,6 +562,7 @@ export type ProviderProfilesMinOrderByAggregateInput = {
   city?: Prisma.SortOrder
   country?: Prisma.SortOrder
   postalCode?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   phoneNumber?: Prisma.SortOrder
   website?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -590,6 +612,10 @@ export type ProviderProfilesUncheckedUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderProfilesUpdateToOneWithWhereWithoutUserInput, Prisma.ProviderProfilesUpdateWithoutUserInput>, Prisma.ProviderProfilesUncheckedUpdateWithoutUserInput>
 }
 
+export type EnumProviderStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ProviderStatus
+}
+
 export type NullableFloatFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
@@ -632,48 +658,52 @@ export type ProviderProfilesCreateNestedOneWithoutReviewsInput = {
   connect?: Prisma.ProviderProfilesWhereUniqueInput
 }
 
-export type ProviderProfilesUpdateOneRequiredWithoutReviewsNestedInput = {
+export type ProviderProfilesUpdateOneWithoutReviewsNestedInput = {
   create?: Prisma.XOR<Prisma.ProviderProfilesCreateWithoutReviewsInput, Prisma.ProviderProfilesUncheckedCreateWithoutReviewsInput>
   connectOrCreate?: Prisma.ProviderProfilesCreateOrConnectWithoutReviewsInput
   upsert?: Prisma.ProviderProfilesUpsertWithoutReviewsInput
+  disconnect?: Prisma.ProviderProfilesWhereInput | boolean
+  delete?: Prisma.ProviderProfilesWhereInput | boolean
   connect?: Prisma.ProviderProfilesWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderProfilesUpdateToOneWithWhereWithoutReviewsInput, Prisma.ProviderProfilesUpdateWithoutReviewsInput>, Prisma.ProviderProfilesUncheckedUpdateWithoutReviewsInput>
 }
 
 export type ProviderProfilesCreateWithoutUserInput = {
-  id: string
+  id?: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   meals?: Prisma.MealsCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderInput
+  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderProfilesInput
 }
 
 export type ProviderProfilesUncheckedCreateWithoutUserInput = {
-  id: string
+  id?: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   meals?: Prisma.MealsUncheckedCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersUncheckedCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderInput
+  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderProfilesInput
 }
 
 export type ProviderProfilesCreateOrConnectWithoutUserInput = {
@@ -698,16 +728,17 @@ export type ProviderProfilesUpdateWithoutUserInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealsUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUpdateManyWithoutProviderNestedInput
+  reviews?: Prisma.ReviewsUpdateManyWithoutProviderProfilesNestedInput
 }
 
 export type ProviderProfilesUncheckedUpdateWithoutUserInput = {
@@ -716,52 +747,55 @@ export type ProviderProfilesUncheckedUpdateWithoutUserInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealsUncheckedUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUncheckedUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderNestedInput
+  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderProfilesNestedInput
 }
 
 export type ProviderProfilesCreateWithoutMealsInput = {
-  id: string
+  id?: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProviderProfilesInput
   orders?: Prisma.OrdersCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderInput
+  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderProfilesInput
 }
 
 export type ProviderProfilesUncheckedCreateWithoutMealsInput = {
-  id: string
+  id?: string
   userId: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   orders?: Prisma.OrdersUncheckedCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderInput
+  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderProfilesInput
 }
 
 export type ProviderProfilesCreateOrConnectWithoutMealsInput = {
@@ -786,16 +820,17 @@ export type ProviderProfilesUpdateWithoutMealsInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfilesNestedInput
   orders?: Prisma.OrdersUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUpdateManyWithoutProviderNestedInput
+  reviews?: Prisma.ReviewsUpdateManyWithoutProviderProfilesNestedInput
 }
 
 export type ProviderProfilesUncheckedUpdateWithoutMealsInput = {
@@ -805,51 +840,54 @@ export type ProviderProfilesUncheckedUpdateWithoutMealsInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrdersUncheckedUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderNestedInput
+  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderProfilesNestedInput
 }
 
 export type ProviderProfilesCreateWithoutOrdersInput = {
-  id: string
+  id?: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProviderProfilesInput
   meals?: Prisma.MealsCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderInput
+  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderProfilesInput
 }
 
 export type ProviderProfilesUncheckedCreateWithoutOrdersInput = {
-  id: string
+  id?: string
   userId: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   meals?: Prisma.MealsUncheckedCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderInput
+  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderProfilesInput
 }
 
 export type ProviderProfilesCreateOrConnectWithoutOrdersInput = {
@@ -874,16 +912,17 @@ export type ProviderProfilesUpdateWithoutOrdersInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfilesNestedInput
   meals?: Prisma.MealsUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUpdateManyWithoutProviderNestedInput
+  reviews?: Prisma.ReviewsUpdateManyWithoutProviderProfilesNestedInput
 }
 
 export type ProviderProfilesUncheckedUpdateWithoutOrdersInput = {
@@ -893,27 +932,29 @@ export type ProviderProfilesUncheckedUpdateWithoutOrdersInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealsUncheckedUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderNestedInput
+  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderProfilesNestedInput
 }
 
 export type ProviderProfilesCreateWithoutReviewsInput = {
-  id: string
+  id?: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -923,16 +964,17 @@ export type ProviderProfilesCreateWithoutReviewsInput = {
 }
 
 export type ProviderProfilesUncheckedCreateWithoutReviewsInput = {
-  id: string
+  id?: string
   userId: string
   restaurantName: string
   address: string
   city: string
   country: string
-  postalCode?: string | null
-  phoneNumber?: string | null
+  postalCode: string
+  isActive?: $Enums.ProviderStatus
+  phoneNumber: string
   website?: string | null
-  description?: string | null
+  description: string
   rating?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -962,10 +1004,11 @@ export type ProviderProfilesUpdateWithoutReviewsInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -981,10 +1024,11 @@ export type ProviderProfilesUncheckedUpdateWithoutReviewsInput = {
   address?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.StringFieldUpdateOperationsInput | string
   country?: Prisma.StringFieldUpdateOperationsInput | string
-  postalCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  postalCode?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.EnumProviderStatusFieldUpdateOperationsInput | $Enums.ProviderStatus
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1049,6 +1093,7 @@ export type ProviderProfilesSelect<ExtArgs extends runtime.Types.Extensions.Inte
   city?: boolean
   country?: boolean
   postalCode?: boolean
+  isActive?: boolean
   phoneNumber?: boolean
   website?: boolean
   description?: boolean
@@ -1070,6 +1115,7 @@ export type ProviderProfilesSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   city?: boolean
   country?: boolean
   postalCode?: boolean
+  isActive?: boolean
   phoneNumber?: boolean
   website?: boolean
   description?: boolean
@@ -1087,6 +1133,7 @@ export type ProviderProfilesSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   city?: boolean
   country?: boolean
   postalCode?: boolean
+  isActive?: boolean
   phoneNumber?: boolean
   website?: boolean
   description?: boolean
@@ -1104,6 +1151,7 @@ export type ProviderProfilesSelectScalar = {
   city?: boolean
   country?: boolean
   postalCode?: boolean
+  isActive?: boolean
   phoneNumber?: boolean
   website?: boolean
   description?: boolean
@@ -1112,7 +1160,7 @@ export type ProviderProfilesSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ProviderProfilesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "restaurantName" | "address" | "city" | "country" | "postalCode" | "phoneNumber" | "website" | "description" | "rating" | "createdAt" | "updatedAt", ExtArgs["result"]["providerProfiles"]>
+export type ProviderProfilesOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "restaurantName" | "address" | "city" | "country" | "postalCode" | "isActive" | "phoneNumber" | "website" | "description" | "rating" | "createdAt" | "updatedAt", ExtArgs["result"]["providerProfiles"]>
 export type ProviderProfilesInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   meals?: boolean | Prisma.ProviderProfiles$mealsArgs<ExtArgs>
@@ -1142,10 +1190,11 @@ export type $ProviderProfilesPayload<ExtArgs extends runtime.Types.Extensions.In
     address: string
     city: string
     country: string
-    postalCode: string | null
-    phoneNumber: string | null
+    postalCode: string
+    isActive: $Enums.ProviderStatus
+    phoneNumber: string
     website: string | null
-    description: string | null
+    description: string
     rating: number | null
     createdAt: Date
     updatedAt: Date
@@ -1583,6 +1632,7 @@ export interface ProviderProfilesFieldRefs {
   readonly city: Prisma.FieldRef<"ProviderProfiles", 'String'>
   readonly country: Prisma.FieldRef<"ProviderProfiles", 'String'>
   readonly postalCode: Prisma.FieldRef<"ProviderProfiles", 'String'>
+  readonly isActive: Prisma.FieldRef<"ProviderProfiles", 'ProviderStatus'>
   readonly phoneNumber: Prisma.FieldRef<"ProviderProfiles", 'String'>
   readonly website: Prisma.FieldRef<"ProviderProfiles", 'String'>
   readonly description: Prisma.FieldRef<"ProviderProfiles", 'String'>

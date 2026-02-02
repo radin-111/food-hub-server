@@ -26,12 +26,12 @@ export type AggregateCategory = {
 
 export type CategoryMinAggregateOutputType = {
   id: string | null
-  cuisineType: $Enums.CuisineType | null
+  cuisineType: string | null
 }
 
 export type CategoryMaxAggregateOutputType = {
   id: string | null
-  cuisineType: $Enums.CuisineType | null
+  cuisineType: string | null
 }
 
 export type CategoryCountAggregateOutputType = {
@@ -131,7 +131,7 @@ export type CategoryGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type CategoryGroupByOutputType = {
   id: string
-  cuisineType: $Enums.CuisineType
+  cuisineType: string
   _count: CategoryCountAggregateOutputType | null
   _min: CategoryMinAggregateOutputType | null
   _max: CategoryMaxAggregateOutputType | null
@@ -157,7 +157,7 @@ export type CategoryWhereInput = {
   OR?: Prisma.CategoryWhereInput[]
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   id?: Prisma.StringFilter<"Category"> | string
-  cuisineType?: Prisma.EnumCuisineTypeFilter<"Category"> | $Enums.CuisineType
+  cuisineType?: Prisma.StringFilter<"Category"> | string
   meals?: Prisma.MealsListRelationFilter
 }
 
@@ -172,7 +172,7 @@ export type CategoryWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   OR?: Prisma.CategoryWhereInput[]
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
-  cuisineType?: Prisma.EnumCuisineTypeFilter<"Category"> | $Enums.CuisineType
+  cuisineType?: Prisma.StringFilter<"Category"> | string
   meals?: Prisma.MealsListRelationFilter
 }, "id">
 
@@ -189,46 +189,46 @@ export type CategoryScalarWhereWithAggregatesInput = {
   OR?: Prisma.CategoryScalarWhereWithAggregatesInput[]
   NOT?: Prisma.CategoryScalarWhereWithAggregatesInput | Prisma.CategoryScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Category"> | string
-  cuisineType?: Prisma.EnumCuisineTypeWithAggregatesFilter<"Category"> | $Enums.CuisineType
+  cuisineType?: Prisma.StringWithAggregatesFilter<"Category"> | string
 }
 
 export type CategoryCreateInput = {
   id: string
-  cuisineType?: $Enums.CuisineType
+  cuisineType: string
   meals?: Prisma.MealsCreateNestedManyWithoutCategoryInput
 }
 
 export type CategoryUncheckedCreateInput = {
   id: string
-  cuisineType?: $Enums.CuisineType
+  cuisineType: string
   meals?: Prisma.MealsUncheckedCreateNestedManyWithoutCategoryInput
 }
 
 export type CategoryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cuisineType?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  cuisineType?: Prisma.StringFieldUpdateOperationsInput | string
   meals?: Prisma.MealsUpdateManyWithoutCategoryNestedInput
 }
 
 export type CategoryUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cuisineType?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  cuisineType?: Prisma.StringFieldUpdateOperationsInput | string
   meals?: Prisma.MealsUncheckedUpdateManyWithoutCategoryNestedInput
 }
 
 export type CategoryCreateManyInput = {
   id: string
-  cuisineType?: $Enums.CuisineType
+  cuisineType: string
 }
 
 export type CategoryUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cuisineType?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  cuisineType?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type CategoryUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cuisineType?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  cuisineType?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type CategoryScalarRelationFilter = {
@@ -265,18 +265,14 @@ export type CategoryUpdateOneRequiredWithoutMealsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CategoryUpdateToOneWithWhereWithoutMealsInput, Prisma.CategoryUpdateWithoutMealsInput>, Prisma.CategoryUncheckedUpdateWithoutMealsInput>
 }
 
-export type EnumCuisineTypeFieldUpdateOperationsInput = {
-  set?: $Enums.CuisineType
-}
-
 export type CategoryCreateWithoutMealsInput = {
   id: string
-  cuisineType?: $Enums.CuisineType
+  cuisineType: string
 }
 
 export type CategoryUncheckedCreateWithoutMealsInput = {
   id: string
-  cuisineType?: $Enums.CuisineType
+  cuisineType: string
 }
 
 export type CategoryCreateOrConnectWithoutMealsInput = {
@@ -297,12 +293,12 @@ export type CategoryUpdateToOneWithWhereWithoutMealsInput = {
 
 export type CategoryUpdateWithoutMealsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cuisineType?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  cuisineType?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type CategoryUncheckedUpdateWithoutMealsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cuisineType?: Prisma.EnumCuisineTypeFieldUpdateOperationsInput | $Enums.CuisineType
+  cuisineType?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -373,7 +369,7 @@ export type $CategoryPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    cuisineType: $Enums.CuisineType
+    cuisineType: string
   }, ExtArgs["result"]["category"]>
   composites: {}
 }
@@ -799,7 +795,7 @@ export interface Prisma__CategoryClient<T, Null = never, ExtArgs extends runtime
  */
 export interface CategoryFieldRefs {
   readonly id: Prisma.FieldRef<"Category", 'String'>
-  readonly cuisineType: Prisma.FieldRef<"Category", 'CuisineType'>
+  readonly cuisineType: Prisma.FieldRef<"Category", 'String'>
 }
     
 

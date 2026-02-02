@@ -326,7 +326,7 @@ export type OrdersScalarWhereWithAggregatesInput = {
 }
 
 export type OrdersCreateInput = {
-  id: string
+  id?: string
   quantity: number
   totalPrice: number
   status?: $Enums.OrderStatus
@@ -339,7 +339,7 @@ export type OrdersCreateInput = {
 }
 
 export type OrdersUncheckedCreateInput = {
-  id: string
+  id?: string
   userId: string
   providerId: string
   mealId: string
@@ -378,7 +378,7 @@ export type OrdersUncheckedUpdateInput = {
 }
 
 export type OrdersCreateManyInput = {
-  id: string
+  id?: string
   userId: string
   providerId: string
   mealId: string
@@ -624,7 +624,7 @@ export type OrdersUpdateOneRequiredWithoutReviewsNestedInput = {
 }
 
 export type OrdersCreateWithoutUserInput = {
-  id: string
+  id?: string
   quantity: number
   totalPrice: number
   status?: $Enums.OrderStatus
@@ -636,7 +636,7 @@ export type OrdersCreateWithoutUserInput = {
 }
 
 export type OrdersUncheckedCreateWithoutUserInput = {
-  id: string
+  id?: string
   providerId: string
   mealId: string
   quantity: number
@@ -689,7 +689,7 @@ export type OrdersScalarWhereInput = {
 }
 
 export type OrdersCreateWithoutProviderInput = {
-  id: string
+  id?: string
   quantity: number
   totalPrice: number
   status?: $Enums.OrderStatus
@@ -701,7 +701,7 @@ export type OrdersCreateWithoutProviderInput = {
 }
 
 export type OrdersUncheckedCreateWithoutProviderInput = {
-  id: string
+  id?: string
   userId: string
   mealId: string
   quantity: number
@@ -739,7 +739,7 @@ export type OrdersUpdateManyWithWhereWithoutProviderInput = {
 }
 
 export type OrdersCreateWithoutMealInput = {
-  id: string
+  id?: string
   quantity: number
   totalPrice: number
   status?: $Enums.OrderStatus
@@ -751,7 +751,7 @@ export type OrdersCreateWithoutMealInput = {
 }
 
 export type OrdersUncheckedCreateWithoutMealInput = {
-  id: string
+  id?: string
   userId: string
   providerId: string
   quantity: number
@@ -789,7 +789,7 @@ export type OrdersUpdateManyWithWhereWithoutMealInput = {
 }
 
 export type OrdersCreateWithoutReviewsInput = {
-  id: string
+  id?: string
   quantity: number
   totalPrice: number
   status?: $Enums.OrderStatus
@@ -801,7 +801,7 @@ export type OrdersCreateWithoutReviewsInput = {
 }
 
 export type OrdersUncheckedCreateWithoutReviewsInput = {
-  id: string
+  id?: string
   userId: string
   providerId: string
   mealId: string
@@ -853,7 +853,7 @@ export type OrdersUncheckedUpdateWithoutReviewsInput = {
 }
 
 export type OrdersCreateManyUserInput = {
-  id: string
+  id?: string
   providerId: string
   mealId: string
   quantity: number
@@ -899,7 +899,7 @@ export type OrdersUncheckedUpdateManyWithoutUserInput = {
 }
 
 export type OrdersCreateManyProviderInput = {
-  id: string
+  id?: string
   userId: string
   mealId: string
   quantity: number
@@ -945,7 +945,7 @@ export type OrdersUncheckedUpdateManyWithoutProviderInput = {
 }
 
 export type OrdersCreateManyMealInput = {
-  id: string
+  id?: string
   userId: string
   providerId: string
   quantity: number

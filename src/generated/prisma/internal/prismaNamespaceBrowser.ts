@@ -102,6 +102,7 @@ export const ProviderProfilesScalarFieldEnum = {
   city: 'city',
   country: 'country',
   postalCode: 'postalCode',
+  isActive: 'isActive',
   phoneNumber: 'phoneNumber',
   website: 'website',
   description: 'description',
@@ -145,12 +146,13 @@ export type OrdersScalarFieldEnum = (typeof OrdersScalarFieldEnum)[keyof typeof 
 export const ReviewsScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  providerId: 'providerId',
+  mealId: 'mealId',
   orderId: 'orderId',
   rating: 'rating',
   comment: 'comment',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  providerProfilesId: 'providerProfilesId'
 } as const
 
 export type ReviewsScalarFieldEnum = (typeof ReviewsScalarFieldEnum)[keyof typeof ReviewsScalarFieldEnum]

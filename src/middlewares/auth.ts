@@ -19,7 +19,7 @@ declare global {
   }
 }
 
-const auth = (...roles: UserRoles[]) => {
+const auth = (...roles: any[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       // get user session
@@ -28,6 +28,7 @@ const auth = (...roles: UserRoles[]) => {
       });
 
       if (!session) {
+       
         return res.status(401).json({
           success: false,
           message: "You are not authorized!",

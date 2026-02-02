@@ -18,6 +18,15 @@ export const Role = {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const ProviderStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  PENDING: 'PENDING'
+} as const
+
+export type ProviderStatus = (typeof ProviderStatus)[keyof typeof ProviderStatus]
+
+
 export const OrderStatus = {
   PLACED: 'PLACED',
   PREPARING: 'PREPARING',
@@ -27,19 +36,3 @@ export const OrderStatus = {
 } as const
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
-
-
-export const CuisineType = {
-  ITALIAN: 'ITALIAN',
-  MEXICAN: 'MEXICAN',
-  CHINESE: 'CHINESE',
-  JAPANESE: 'JAPANESE',
-  INDIAN: 'INDIAN',
-  AMERICAN: 'AMERICAN',
-  FRENCH: 'FRENCH',
-  GREEK: 'GREEK',
-  ETHIOPIAN: 'ETHIOPIAN',
-  OTHER: 'OTHER'
-} as const
-
-export type CuisineType = (typeof CuisineType)[keyof typeof CuisineType]

@@ -308,7 +308,7 @@ export type UserCreateInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -326,7 +326,7 @@ export type UserUncheckedCreateInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -380,7 +380,7 @@ export type UserCreateManyInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
 }
@@ -553,7 +553,7 @@ export type UserCreateWithoutProviderProfilesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -570,7 +570,7 @@ export type UserUncheckedCreateWithoutProviderProfilesInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -637,7 +637,7 @@ export type UserCreateWithoutOrdersInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -654,7 +654,7 @@ export type UserUncheckedCreateWithoutOrdersInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -721,7 +721,7 @@ export type UserCreateWithoutReviewsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -738,7 +738,7 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -805,7 +805,7 @@ export type UserCreateWithoutSessionsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -822,7 +822,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -889,7 +889,7 @@ export type UserCreateWithoutAccountsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -906,7 +906,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   image?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  role: $Enums.Role
+  role?: $Enums.Role
   phone?: string | null
   status?: string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput

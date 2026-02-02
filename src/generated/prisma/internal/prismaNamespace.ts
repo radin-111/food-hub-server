@@ -1141,6 +1141,7 @@ export const ProviderProfilesScalarFieldEnum = {
   city: 'city',
   country: 'country',
   postalCode: 'postalCode',
+  isActive: 'isActive',
   phoneNumber: 'phoneNumber',
   website: 'website',
   description: 'description',
@@ -1184,12 +1185,13 @@ export type OrdersScalarFieldEnum = (typeof OrdersScalarFieldEnum)[keyof typeof 
 export const ReviewsScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  providerId: 'providerId',
+  mealId: 'mealId',
   orderId: 'orderId',
   rating: 'rating',
   comment: 'comment',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  providerProfilesId: 'providerProfilesId'
 } as const
 
 export type ReviewsScalarFieldEnum = (typeof ReviewsScalarFieldEnum)[keyof typeof ReviewsScalarFieldEnum]
@@ -1328,6 +1330,20 @@ export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'ProviderStatus'
+ */
+export type EnumProviderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProviderStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ProviderStatus[]'
+ */
+export type ListEnumProviderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProviderStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1366,20 +1382,6 @@ export type EnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'OrderStatus[]'
  */
 export type ListEnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'CuisineType'
- */
-export type EnumCuisineTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CuisineType'>
-    
-
-
-/**
- * Reference to a field of type 'CuisineType[]'
- */
-export type ListEnumCuisineTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CuisineType[]'>
     
 
 /**
