@@ -18,48 +18,14 @@ const createProviderProfiles = async (req: Request, res: Response) => {
     });
   }
 };
-const createMeals = async (req: Request, res: Response) => {
-  const meals = req.body;
-  const result = await providerProfilesServices.createMeals(meals);
-  try {
-    res.status(201).json({
-      success: true,
-      message: "Meals created successfully",
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error,
-    });
-  }
-};
-const updateMeals = async (req: Request, res: Response) => {
+const updateProviderProfiles = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const meals = req.body;
-  const result = await providerProfilesServices.updateMeals(id as string, meals);
+  const providerProfile = req.body;
+  const result = await providerProfilesServices.updateProviderProfiles(id as string, providerProfile);
   try {
     res.status(201).json({
       success: true,
-      message: "Meals updated successfully",
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error,
-    });
-  }
-};
-const deleteMeals = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await providerProfilesServices.deleteMeals(id as string);
-  try {
-    res.status(201).json({
-      success: true,
-      message: "Meals deleted successfully",
+      message: "Provider profile updated successfully",
       data: result,
     });
   } catch (error) {
@@ -73,7 +39,7 @@ const deleteMeals = async (req: Request, res: Response) => {
   
 export const ProviderProfilesController = {
   createProviderProfiles,
-  createMeals,
-  updateMeals,
-  deleteMeals
-};
+  
+  updateProviderProfiles,
+  
+}

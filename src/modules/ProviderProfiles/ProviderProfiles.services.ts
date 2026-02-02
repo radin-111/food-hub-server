@@ -15,32 +15,20 @@ const createProviderProfiles = async (
   });
   return result;
 };
-const createMeals = async (data: Meals) => {
-  const result = await prisma.meals.create({
-    data,
-  });
-  return result;
-};
-const updateMeals = async (id: string, data: Meals) => {
-  const result = await prisma.meals.update({
+
+
+const updateProviderProfiles = async (id: string, data: ProviderProfiles) => {
+  const result = await prisma.providerProfiles.update({
     where: {
       id,
     },
     data,
-  });
-  return result;
-};
-const deleteMeals = async (id: string) => {
-  const result = await prisma.meals.delete({
-    where: {
-      id,
-    },
   });
   return result;
 };
 export const providerProfilesServices = {
   createProviderProfiles,
-  createMeals,
-  updateMeals,
-  deleteMeals,
+  
+  updateProviderProfiles,
+  
 };

@@ -74,6 +74,7 @@ import { toNodeHandler } from "better-auth/node";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import nodemailer from "nodemailer";
+var isProd = process.env.NODE_ENV === "production";
 var transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
@@ -300,11 +301,15 @@ var auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
     }
   },
-  cookie: {
-    secure: true,
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/"
+  advanced: {
+    useSecureCookies: isProd,
+    defaultCookieAttributes: {
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd
+    },
+    crossSubDomainCookies: {
+      enabled: isProd
+    }
   }
 });
 
@@ -485,9 +490,46 @@ var userControllers = {
   getAllUsers: getAllUsers2
 };
 
+// src/middlewares/auth.ts
+var auth2 = (...roles) => {
+  return async (req, res, next) => {
+    try {
+      const session = await auth.api.getSession({
+        headers: req.headers
+      });
+      if (!session) {
+        return res.status(401).json({
+          success: false,
+          message: "You are not authorized!"
+        });
+      }
+      if (!session.user.emailVerified) {
+        return res.status(403).json({
+          success: false,
+          message: "Email verification required. Please verfiy your email!"
+        });
+      }
+      if (roles.length && !roles.includes(session.user.role)) {
+        return res.status(403).json({
+          success: false,
+          message: "You are not authorized!"
+        });
+      }
+      next();
+    } catch (err) {
+      return res.status(401).json({
+        success: false,
+        message: "You are not authorized!",
+        error: err.message
+      });
+    }
+  };
+};
+var auth_default = auth2;
+
 // src/modules/Users/Users.routes.ts
 var router2 = Router2();
-router2.get("/", userControllers.getAllUsers);
+router2.get("/", auth_default("ADMIN" /* ADMIN */), userControllers.getAllUsers);
 var UsersRoutes = router2;
 
 // src/app.ts

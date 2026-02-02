@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import nodemailer from "nodemailer";
 import { prisma } from "./prisma";
-
+const isProd = process.env.NODE_ENV === "production";
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
@@ -231,10 +231,15 @@ export const auth = betterAuth({
     },
   },
 
-  cookie: {
-    secure: true,
-    httpOnly: true,
-    sameSite: "none",
-    path: "/",
+  advanced: {
+    useSecureCookies: isProd,
+    defaultCookieAttributes: {
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
+    },
+
+    crossSubDomainCookies: {
+      enabled: isProd,
+    },
   },
 });

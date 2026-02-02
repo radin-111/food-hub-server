@@ -42,14 +42,19 @@ const auth = (...roles: any[]) => {
         });
       }
 
-    
+      if (roles.length && !roles.includes(session.user.role)) {
+        return res.status(403).json({
+          success: false,
+          message: "You are not authorized!",
+        });
+      }
 
       next();
-    } catch (err:any) {
+    } catch (err: any) {
       return res.status(401).json({
         success: false,
         message: "You are not authorized!",
-        error:err.message
+        error: err.message,
       });
     }
   };
