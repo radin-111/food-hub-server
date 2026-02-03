@@ -49,6 +49,14 @@ const auth = (...roles: any[]) => {
         });
       }
 
+
+      req.user ={
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.name,
+        role: session.user.role as string,
+        emailVerified: session.user.emailVerified,
+      };
       next();
     } catch (err: any) {
       return res.status(401).json({

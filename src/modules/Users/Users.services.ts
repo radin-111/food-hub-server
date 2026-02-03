@@ -39,4 +39,5 @@ const updateUserRole = async (id: string, role: Role) => {
 export const userServices={
     getAllUsers,
     updateUserRole,
+    
 }

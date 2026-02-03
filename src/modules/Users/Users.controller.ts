@@ -40,7 +40,10 @@ const updateUserRole = async (req: Request, res: Response) => {
 };
 
 
+
+
 export const userControllers = {
   getAllUsers,
   updateUserRole,
+  
 };
