@@ -38,6 +38,7 @@ export type MealsMinAggregateOutputType = {
   id: string | null
   name: string | null
   providerId: string | null
+  image: string | null
   description: string | null
   price: number | null
   categoryId: string | null
@@ -49,6 +50,7 @@ export type MealsMaxAggregateOutputType = {
   id: string | null
   name: string | null
   providerId: string | null
+  image: string | null
   description: string | null
   price: number | null
   categoryId: string | null
@@ -60,6 +62,7 @@ export type MealsCountAggregateOutputType = {
   id: number
   name: number
   providerId: number
+  image: number
   description: number
   price: number
   categoryId: number
@@ -81,6 +84,7 @@ export type MealsMinAggregateInputType = {
   id?: true
   name?: true
   providerId?: true
+  image?: true
   description?: true
   price?: true
   categoryId?: true
@@ -92,6 +96,7 @@ export type MealsMaxAggregateInputType = {
   id?: true
   name?: true
   providerId?: true
+  image?: true
   description?: true
   price?: true
   categoryId?: true
@@ -103,6 +108,7 @@ export type MealsCountAggregateInputType = {
   id?: true
   name?: true
   providerId?: true
+  image?: true
   description?: true
   price?: true
   categoryId?: true
@@ -201,6 +207,7 @@ export type MealsGroupByOutputType = {
   id: string
   name: string
   providerId: string
+  image: string
   description: string
   price: number
   categoryId: string
@@ -235,6 +242,7 @@ export type MealsWhereInput = {
   id?: Prisma.StringFilter<"Meals"> | string
   name?: Prisma.StringFilter<"Meals"> | string
   providerId?: Prisma.StringFilter<"Meals"> | string
+  image?: Prisma.StringFilter<"Meals"> | string
   description?: Prisma.StringFilter<"Meals"> | string
   price?: Prisma.FloatFilter<"Meals"> | number
   categoryId?: Prisma.StringFilter<"Meals"> | string
@@ -250,6 +258,7 @@ export type MealsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
@@ -268,6 +277,7 @@ export type MealsWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.MealsWhereInput | Prisma.MealsWhereInput[]
   name?: Prisma.StringFilter<"Meals"> | string
   providerId?: Prisma.StringFilter<"Meals"> | string
+  image?: Prisma.StringFilter<"Meals"> | string
   description?: Prisma.StringFilter<"Meals"> | string
   price?: Prisma.FloatFilter<"Meals"> | number
   categoryId?: Prisma.StringFilter<"Meals"> | string
@@ -283,6 +293,7 @@ export type MealsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
@@ -302,6 +313,7 @@ export type MealsScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Meals"> | string
   name?: Prisma.StringWithAggregatesFilter<"Meals"> | string
   providerId?: Prisma.StringWithAggregatesFilter<"Meals"> | string
+  image?: Prisma.StringWithAggregatesFilter<"Meals"> | string
   description?: Prisma.StringWithAggregatesFilter<"Meals"> | string
   price?: Prisma.FloatWithAggregatesFilter<"Meals"> | number
   categoryId?: Prisma.StringWithAggregatesFilter<"Meals"> | string
@@ -312,6 +324,7 @@ export type MealsScalarWhereWithAggregatesInput = {
 export type MealsCreateInput = {
   id?: string
   name: string
+  image: string
   description: string
   price: number
   createdAt?: Date | string
@@ -326,6 +339,7 @@ export type MealsUncheckedCreateInput = {
   id?: string
   name: string
   providerId: string
+  image: string
   description: string
   price: number
   categoryId: string
@@ -338,6 +352,7 @@ export type MealsUncheckedCreateInput = {
 export type MealsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -352,6 +367,7 @@ export type MealsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -365,6 +381,7 @@ export type MealsCreateManyInput = {
   id?: string
   name: string
   providerId: string
+  image: string
   description: string
   price: number
   categoryId: string
@@ -375,6 +392,7 @@ export type MealsCreateManyInput = {
 export type MealsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -385,6 +403,7 @@ export type MealsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -406,6 +425,7 @@ export type MealsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
@@ -421,6 +441,7 @@ export type MealsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
@@ -432,6 +453,7 @@ export type MealsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   description?: Prisma.SortOrder
   price?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
@@ -571,6 +593,7 @@ export type MealsUncheckedUpdateManyWithoutCategoryNestedInput = {
 export type MealsCreateWithoutProviderInput = {
   id?: string
   name: string
+  image: string
   description: string
   price: number
   createdAt?: Date | string
@@ -583,6 +606,7 @@ export type MealsCreateWithoutProviderInput = {
 export type MealsUncheckedCreateWithoutProviderInput = {
   id?: string
   name: string
+  image: string
   description: string
   price: number
   categoryId: string
@@ -625,6 +649,7 @@ export type MealsScalarWhereInput = {
   id?: Prisma.StringFilter<"Meals"> | string
   name?: Prisma.StringFilter<"Meals"> | string
   providerId?: Prisma.StringFilter<"Meals"> | string
+  image?: Prisma.StringFilter<"Meals"> | string
   description?: Prisma.StringFilter<"Meals"> | string
   price?: Prisma.FloatFilter<"Meals"> | number
   categoryId?: Prisma.StringFilter<"Meals"> | string
@@ -635,6 +660,7 @@ export type MealsScalarWhereInput = {
 export type MealsCreateWithoutOrdersInput = {
   id?: string
   name: string
+  image: string
   description: string
   price: number
   createdAt?: Date | string
@@ -648,6 +674,7 @@ export type MealsUncheckedCreateWithoutOrdersInput = {
   id?: string
   name: string
   providerId: string
+  image: string
   description: string
   price: number
   categoryId: string
@@ -675,6 +702,7 @@ export type MealsUpdateToOneWithWhereWithoutOrdersInput = {
 export type MealsUpdateWithoutOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -688,6 +716,7 @@ export type MealsUncheckedUpdateWithoutOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -699,6 +728,7 @@ export type MealsUncheckedUpdateWithoutOrdersInput = {
 export type MealsCreateWithoutReviewsInput = {
   id?: string
   name: string
+  image: string
   description: string
   price: number
   createdAt?: Date | string
@@ -712,6 +742,7 @@ export type MealsUncheckedCreateWithoutReviewsInput = {
   id?: string
   name: string
   providerId: string
+  image: string
   description: string
   price: number
   categoryId: string
@@ -739,6 +770,7 @@ export type MealsUpdateToOneWithWhereWithoutReviewsInput = {
 export type MealsUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -752,6 +784,7 @@ export type MealsUncheckedUpdateWithoutReviewsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -763,6 +796,7 @@ export type MealsUncheckedUpdateWithoutReviewsInput = {
 export type MealsCreateWithoutCategoryInput = {
   id?: string
   name: string
+  image: string
   description: string
   price: number
   createdAt?: Date | string
@@ -776,6 +810,7 @@ export type MealsUncheckedCreateWithoutCategoryInput = {
   id?: string
   name: string
   providerId: string
+  image: string
   description: string
   price: number
   createdAt?: Date | string
@@ -813,6 +848,7 @@ export type MealsUpdateManyWithWhereWithoutCategoryInput = {
 export type MealsCreateManyProviderInput = {
   id?: string
   name: string
+  image: string
   description: string
   price: number
   categoryId: string
@@ -823,6 +859,7 @@ export type MealsCreateManyProviderInput = {
 export type MealsUpdateWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -835,6 +872,7 @@ export type MealsUpdateWithoutProviderInput = {
 export type MealsUncheckedUpdateWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -847,6 +885,7 @@ export type MealsUncheckedUpdateWithoutProviderInput = {
 export type MealsUncheckedUpdateManyWithoutProviderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -858,6 +897,7 @@ export type MealsCreateManyCategoryInput = {
   id?: string
   name: string
   providerId: string
+  image: string
   description: string
   price: number
   createdAt?: Date | string
@@ -867,6 +907,7 @@ export type MealsCreateManyCategoryInput = {
 export type MealsUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -880,6 +921,7 @@ export type MealsUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -892,6 +934,7 @@ export type MealsUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
+  image?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -942,6 +985,7 @@ export type MealsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   id?: boolean
   name?: boolean
   providerId?: boolean
+  image?: boolean
   description?: boolean
   price?: boolean
   categoryId?: boolean
@@ -958,6 +1002,7 @@ export type MealsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   name?: boolean
   providerId?: boolean
+  image?: boolean
   description?: boolean
   price?: boolean
   categoryId?: boolean
@@ -971,6 +1016,7 @@ export type MealsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   name?: boolean
   providerId?: boolean
+  image?: boolean
   description?: boolean
   price?: boolean
   categoryId?: boolean
@@ -984,6 +1030,7 @@ export type MealsSelectScalar = {
   id?: boolean
   name?: boolean
   providerId?: boolean
+  image?: boolean
   description?: boolean
   price?: boolean
   categoryId?: boolean
@@ -991,7 +1038,7 @@ export type MealsSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MealsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "providerId" | "description" | "price" | "categoryId" | "createdAt" | "updatedAt", ExtArgs["result"]["meals"]>
+export type MealsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "providerId" | "image" | "description" | "price" | "categoryId" | "createdAt" | "updatedAt", ExtArgs["result"]["meals"]>
 export type MealsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   provider?: boolean | Prisma.ProviderProfilesDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
@@ -1020,6 +1067,7 @@ export type $MealsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     id: string
     name: string
     providerId: string
+    image: string
     description: string
     price: number
     categoryId: string
@@ -1455,6 +1503,7 @@ export interface MealsFieldRefs {
   readonly id: Prisma.FieldRef<"Meals", 'String'>
   readonly name: Prisma.FieldRef<"Meals", 'String'>
   readonly providerId: Prisma.FieldRef<"Meals", 'String'>
+  readonly image: Prisma.FieldRef<"Meals", 'String'>
   readonly description: Prisma.FieldRef<"Meals", 'String'>
   readonly price: Prisma.FieldRef<"Meals", 'Float'>
   readonly categoryId: Prisma.FieldRef<"Meals", 'String'>

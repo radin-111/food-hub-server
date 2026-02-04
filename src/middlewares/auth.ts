@@ -1,5 +1,7 @@
 import { auth as betterAuth } from "../lib/auth";
 import { type Request, type Response, type NextFunction } from "express";
+import { useRoles } from "../types/userRoles";
+import { prisma } from "../lib/prisma";
 export enum UserRoles {
   CUSTOMER = "CUSTOMER",
   PROVIDER = "PROVIDER",
@@ -10,6 +12,7 @@ declare global {
     interface Request {
       user?: {
         id: string;
+        providerId?: string;
         email: string;
         name: string;
         role: string;
@@ -28,7 +31,6 @@ const auth = (...roles: any[]) => {
       });
 
       if (!session) {
-       
         return res.status(401).json({
           success: false,
           message: "You are not authorized!",
@@ -49,14 +51,22 @@ const auth = (...roles: any[]) => {
         });
       }
 
-
-      req.user ={
+      req.user = {
         id: session.user.id,
         email: session.user.email,
         name: session.user.name,
         role: session.user.role as string,
         emailVerified: session.user.emailVerified,
       };
+
+      if (req.user.role === useRoles.PROVIDER) {
+        const provider = await prisma.providerProfiles.findUnique({
+          where: {
+            userId: req.user.id,
+          },
+        });
+        req.user.providerId = provider?.id;
+      }
       next();
     } catch (err: any) {
       return res.status(401).json({

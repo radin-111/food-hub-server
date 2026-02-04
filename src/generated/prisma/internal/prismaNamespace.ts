@@ -1157,6 +1157,7 @@ export const MealsScalarFieldEnum = {
   id: 'id',
   name: 'name',
   providerId: 'providerId',
+  image: 'image',
   description: 'description',
   price: 'price',
   categoryId: 'categoryId',

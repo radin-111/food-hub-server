@@ -81,6 +81,7 @@ model Meals {
   id          String           @id @default(uuid())
   name        String
   providerId  String
+  image       String
   provider    ProviderProfiles @relation(fields: [providerId], references: [id])
   description String
   price       Float
@@ -133,7 +134,7 @@ model Reviews {
 
 
 model Category {
-  id          String  @id
+  id          String  @id @default(uuid())
   cuisineType String
   meals       Meals[]
 

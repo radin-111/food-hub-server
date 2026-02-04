@@ -11,8 +11,13 @@ router.post(
 router.get("/requests",auth(UserRoles.ADMIN),ProviderProfilesController.getProviderProfilesRequest);
 router.patch(
   "/:id",
-  auth(UserRoles.ADMIN),
+  auth(UserRoles.PROVIDER),
   ProviderProfilesController.updateProviderProfiles,
+);
+router.patch(
+  "/requests/:id",
+  auth(UserRoles.ADMIN),
+  ProviderProfilesController.updateProviderProfilesRequest,
 );
 router.get(
   "/",

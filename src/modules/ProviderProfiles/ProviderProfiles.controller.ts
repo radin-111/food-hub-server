@@ -79,10 +79,29 @@ const updateProviderProfiles = async (req: Request, res: Response) => {
     });
   }
 };
+const updateProviderProfilesRequest = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const providerProfile = req.body;
+  const result = await providerProfilesServices.updateProviderProfilesRequest(id as string, providerProfile);
+  try {
+    res.status(201).json({
+      success: true,
+      message: "Provider profile request updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
   
 export const ProviderProfilesController = {
   createProviderProfiles,
   getAllProviderProfiles,
+  updateProviderProfilesRequest,
   updateProviderProfiles,
   getProviderProfilesRequest,
 }

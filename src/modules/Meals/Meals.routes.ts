@@ -1,11 +1,14 @@
 import { Router } from "express";
 import { MealsController } from "./Meals.controller";
+import auth, { UserRoles } from "../../middlewares/auth";
 
 const router = Router();
-
-router.post("/meals", MealsController.createMeals);
-router.patch("/meals/:id", MealsController.updateMeals);
-router.delete("/meals/:id", MealsController.deleteMeals);
+router.get("/", MealsController.getAllMeals);
+router.post("/", MealsController.createMeals);
+router.patch("/:id", MealsController.updateMeals);
+router.delete("/:id", MealsController.deleteMeals);
+router.get("/categories",auth(UserRoles.ADMIN,UserRoles.PROVIDER), MealsController.getAllCategories);
+router.post("/categories",auth(UserRoles.ADMIN), MealsController.createCategories);
 
 
 export const MealsRoutes: Router = router;

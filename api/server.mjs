@@ -58,6 +58,13 @@ var TransactionIsolationLevel = runtime2.makeStrictEnum({
 });
 var defineExtension = runtime2.Extensions.defineExtension;
 
+// src/generated/prisma/enums.ts
+var ProviderStatus = {
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+  PENDING: "PENDING"
+};
+
 // src/generated/prisma/client.ts
 globalThis["__dirname"] = path.dirname(fileURLToPath(import.meta.url));
 var PrismaClient = getPrismaClientClass();
@@ -317,33 +324,111 @@ var auth = betterAuth({
 import { Router } from "express";
 
 // src/modules/ProviderProfiles/ProviderProfiles.services.ts
-var createProviderProfiles = async (profileData) => {
+var getAllProviderProfiles = async (page) => {
+  const totalPages = Math.ceil(
+    await prisma.providerProfiles.count({
+      where: {
+        isActive: ProviderStatus.ACTIVE
+      }
+    }) / 15
+  ) || 1;
+  const result = await prisma.providerProfiles.findMany({
+    take: 15,
+    skip: (page - 1) * 15,
+    where: {
+      isActive: ProviderStatus.ACTIVE
+    }
+  });
+  return { result, totalPages };
+};
+var createProviderProfiles = async (profileData, userId) => {
   const result = await prisma.providerProfiles.create({
     data: {
       ...profileData,
-      userId: profileData.userId
+      userId
     }
   });
   return result;
 };
-var updateProviderProfiles = async (id, data) => {
-  const result = await prisma.providerProfiles.update({
+var updateProviderProfiles = async (id, data, userId) => {
+  const providerProfile = await prisma.providerProfiles.findUnique({
     where: {
       id
+    },
+    select: {
+      id: true
+    }
+  });
+  const result = await prisma.providerProfiles.update({
+    where: {
+      id: providerProfile?.id
     },
     data
   });
   return result;
 };
+var getProviderProfilesRequest = async (page) => {
+  const totalPages = Math.ceil(
+    await prisma.providerProfiles.count({
+      where: {
+        isActive: ProviderStatus.PENDING
+      }
+    }) / 15
+  ) || 1;
+  const result = await prisma.providerProfiles.findMany({
+    take: 15,
+    skip: (page - 1) * 15,
+    where: {
+      isActive: ProviderStatus.PENDING
+    }
+  });
+  return { result, totalPages };
+};
 var providerProfilesServices = {
   createProviderProfiles,
-  updateProviderProfiles
+  getAllProviderProfiles,
+  updateProviderProfiles,
+  getProviderProfilesRequest
 };
 
 // src/modules/ProviderProfiles/ProviderProfiles.controller.ts
+var getAllProviderProfiles2 = async (req, res) => {
+  const { page } = req.query;
+  const result = await providerProfilesServices.getAllProviderProfiles(Number(page) || 1);
+  try {
+    res.status(201).json({
+      success: true,
+      message: "Provider profiles retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var getProviderProfilesRequest2 = async (req, res) => {
+  const { page } = req.query;
+  const result = await providerProfilesServices.getProviderProfilesRequest(Number(page) || 1);
+  try {
+    res.status(201).json({
+      success: true,
+      message: "Provider profiles request retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
 var createProviderProfiles2 = async (req, res) => {
   const providerProfile = req.body;
-  const result = await providerProfilesServices.createProviderProfiles(providerProfile);
+  const result = await providerProfilesServices.createProviderProfiles(providerProfile, req?.user?.id);
   try {
     res.status(201).json({
       success: true,
@@ -361,7 +446,7 @@ var createProviderProfiles2 = async (req, res) => {
 var updateProviderProfiles2 = async (req, res) => {
   const { id } = req.params;
   const providerProfile = req.body;
-  const result = await providerProfilesServices.updateProviderProfiles(id, providerProfile);
+  const result = await providerProfilesServices.updateProviderProfiles(id, providerProfile, req?.user?.id);
   try {
     res.status(201).json({
       success: true,
@@ -378,62 +463,9 @@ var updateProviderProfiles2 = async (req, res) => {
 };
 var ProviderProfilesController = {
   createProviderProfiles: createProviderProfiles2,
-  updateProviderProfiles: updateProviderProfiles2
-};
-
-// src/modules/ProviderProfiles/ProviderProfiles.routes.ts
-var router = Router();
-router.post("/", ProviderProfilesController.createProviderProfiles);
-router.patch("/:id", ProviderProfilesController.updateProviderProfiles);
-var ProviderProfilesRoutes = router;
-
-// src/modules/Users/Users.routes.ts
-import { Router as Router2 } from "express";
-
-// src/modules/Users/Users.services.ts
-var getAllUsers = async (page) => {
-  const users = await prisma.user.findMany(
-    {
-      take: 15,
-      skip: (page - 1) * 15,
-      select: {
-        id: true,
-        email: true,
-        role: true
-      }
-    }
-  );
-  const totalUsers = await prisma.user.count();
-  const totalPages = Math.ceil(totalUsers / 15);
-  return {
-    users,
-    totalPages
-  };
-};
-var userServices = {
-  getAllUsers
-};
-
-// src/modules/Users/Users.controller.ts
-var getAllUsers2 = async (req, res) => {
-  const page = Number(req.query.page) || 1;
-  const result = await userServices.getAllUsers(page);
-  try {
-    res.status(200).json({
-      success: true,
-      message: "Users retrieved successfully",
-      data: result
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message
-    });
-  }
-};
-var userControllers = {
-  getAllUsers: getAllUsers2
+  getAllProviderProfiles: getAllProviderProfiles2,
+  updateProviderProfiles: updateProviderProfiles2,
+  getProviderProfilesRequest: getProviderProfilesRequest2
 };
 
 // src/middlewares/auth.ts
@@ -461,6 +493,13 @@ var auth2 = (...roles) => {
           message: "You are not authorized!"
         });
       }
+      req.user = {
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.name,
+        role: session.user.role,
+        emailVerified: session.user.emailVerified
+      };
       next();
     } catch (err) {
       return res.status(401).json({
@@ -473,9 +512,110 @@ var auth2 = (...roles) => {
 };
 var auth_default = auth2;
 
+// src/modules/ProviderProfiles/ProviderProfiles.routes.ts
+var router = Router();
+router.post(
+  "/",
+  auth_default("CUSTOMER" /* CUSTOMER */),
+  ProviderProfilesController.createProviderProfiles
+);
+router.get("/requests", auth_default("ADMIN" /* ADMIN */), ProviderProfilesController.getProviderProfilesRequest);
+router.patch(
+  "/:id",
+  auth_default("ADMIN" /* ADMIN */),
+  ProviderProfilesController.updateProviderProfiles
+);
+router.get(
+  "/",
+  auth_default("ADMIN" /* ADMIN */),
+  ProviderProfilesController.getAllProviderProfiles
+);
+var ProviderProfilesRoutes = router;
+
+// src/modules/Users/Users.routes.ts
+import { Router as Router2 } from "express";
+
+// src/modules/Users/Users.services.ts
+var getAllUsers = async (page) => {
+  const users = await prisma.user.findMany(
+    {
+      take: 15,
+      skip: (page - 1) * 15,
+      select: {
+        id: true,
+        email: true,
+        role: true
+      }
+    }
+  );
+  const totalUsers = await prisma.user.count();
+  const totalPages = Math.ceil(totalUsers / 15);
+  return {
+    users,
+    totalPages
+  };
+};
+var updateUserRole = async (id, role) => {
+  const result = await prisma.user.update({
+    where: {
+      id
+    },
+    data: {
+      role
+    }
+  });
+  return result;
+};
+var userServices = {
+  getAllUsers,
+  updateUserRole
+};
+
+// src/modules/Users/Users.controller.ts
+var getAllUsers2 = async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const result = await userServices.getAllUsers(page);
+  try {
+    res.status(200).json({
+      success: true,
+      message: "Users retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+var updateUserRole2 = async (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+  const result = await userServices.updateUserRole(id, role);
+  try {
+    res.status(200).json({
+      success: true,
+      message: "User role updated successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
+var userControllers = {
+  getAllUsers: getAllUsers2,
+  updateUserRole: updateUserRole2
+};
+
 // src/modules/Users/Users.routes.ts
 var router2 = Router2();
 router2.get("/", auth_default("ADMIN" /* ADMIN */), userControllers.getAllUsers);
+router2.patch("/:id/role", auth_default("ADMIN" /* ADMIN */), userControllers.updateUserRole);
 var UsersRoutes = router2;
 
 // src/modules/Meals/Meals.routes.ts

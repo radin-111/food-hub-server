@@ -2,6 +2,7 @@ import {
   Meals,
   ProviderProfiles,
   ProviderStatus,
+  Role,
 } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
@@ -77,9 +78,45 @@ const getProviderProfilesRequest = async (page: number) => {
   });
   return { result, totalPages };
 };
+
+const updateProviderProfilesRequest = async (
+  id: string,
+  data: ProviderProfiles,
+) => {
+  const userID = await prisma.providerProfiles.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      userId: true,
+    },
+  });
+
+  
+    if(data.isActive===ProviderStatus.ACTIVE){
+      await prisma.user.update({
+        where: {
+          id: userID?.userId,
+        },
+        data: {
+          role: Role.PROVIDER,
+        },
+      });
+    }
+ 
+  const result = await prisma.providerProfiles.update({
+    where: {
+      id,
+    },
+    data,
+  });
+  return result;
+};
+
 export const providerProfilesServices = {
   createProviderProfiles,
   getAllProviderProfiles,
   updateProviderProfiles,
+  updateProviderProfilesRequest,
   getProviderProfilesRequest,
 };

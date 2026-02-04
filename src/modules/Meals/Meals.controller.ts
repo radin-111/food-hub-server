@@ -59,8 +59,65 @@ const deleteMeals = async (req: Request, res: Response) => {
     });
   }
 }
+
+const getAllMeals = async (req: Request, res: Response) => {
+  try {
+    const result = await MealsServices.getAllMeals();
+    res.status(201).json({
+      success: true,
+      message: "Meals fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+}
+
+const getAllCategories = async (req: Request, res: Response) => {
+  try {
+    const result = await MealsServices.getAllCategories();
+    res.status(201).json({
+      success: true,
+      message: "Categories fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+}
+
+const createCategories = async (req: Request, res: Response) => {
+  const category = req.body;
+  
+  try {
+    const result = await MealsServices.createCategories(category);
+    res.status(201).json({
+      success: true,
+      message: "Category created successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+}
+
 export const MealsController = {
   createMeals,
+  createCategories,
+  getAllCategories,
   updateMeals,
   deleteMeals,
+  getAllMeals,
 }
