@@ -96,6 +96,7 @@ const getAllCategories = async (req: Request, res: Response) => {
 
 const createCategories = async (req: Request, res: Response) => {
   const category = req.body;
+ 
   
   try {
     const result = await MealsServices.createCategories(category);
@@ -113,11 +114,31 @@ const createCategories = async (req: Request, res: Response) => {
   }
 }
 
+const updateCategories = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const category = req.body;
+  try {
+    const result = await MealsServices.updateCategories(id as string, category);
+    res.status(201).json({
+      success: true,
+      message: "Category updated successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+}
+
 export const MealsController = {
   createMeals,
   createCategories,
   getAllCategories,
   updateMeals,
   deleteMeals,
+  updateCategories,
   getAllMeals,
 }

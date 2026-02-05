@@ -53,10 +53,22 @@ const createCategories = async (category: any) => {
   return result;
 };
 
+const updateCategories = async (id: string, updatedData: any) => {
+  
+  const result = await prisma.category.update({
+    where: {
+      id,
+    },
+    data: updatedData,
+  });
+  return result;
+};
+
 export const MealsServices = {
   createMeals,
   createCategories,
   updateMeals,
+  updateCategories,
   deleteMeals,
   getAllMeals,
   getAllCategories,

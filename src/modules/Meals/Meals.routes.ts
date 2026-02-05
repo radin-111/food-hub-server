@@ -9,6 +9,8 @@ router.patch("/:id", MealsController.updateMeals);
 router.delete("/:id", MealsController.deleteMeals);
 router.get("/categories",auth(UserRoles.ADMIN,UserRoles.PROVIDER), MealsController.getAllCategories);
 router.post("/categories",auth(UserRoles.ADMIN), MealsController.createCategories);
+router.patch("/categories/:id",auth(UserRoles.ADMIN), MealsController.updateCategories);
+
 
 
 export const MealsRoutes: Router = router;

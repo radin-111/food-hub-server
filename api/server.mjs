@@ -17,14 +17,14 @@ var config = {
   "clientVersion": "7.3.0",
   "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
-  "inlineSchema": '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nenum Role {\n  CUSTOMER\n  PROVIDER\n  ADMIN\n}\n\nenum OrderStatus {\n  PENDING\n  PLACED\n  PREPARING\n  READY\n  CANCELLED\n  DELIVERED\n}\n\nmodel User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  role             Role              @default(CUSTOMER)\n  phone            String?\n  status           String?           @default("ACTIVE")\n  providerProfiles ProviderProfiles?\n  orders           Orders[]\n  reviews          Reviews[]\n\n  @@unique([email])\n  @@map("user")\n}\n\nenum ProviderStatus {\n  ACTIVE\n  INACTIVE\n  PENDING\n}\n\nmodel ProviderProfiles {\n  id             String         @id @default(uuid())\n  userId         String         @unique\n  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)\n  restaurantName String\n  address        String\n  city           String\n  country        String\n  postalCode     String\n  isActive       ProviderStatus @default(PENDING)\n  phoneNumber    String\n  website        String?\n  description    String\n  rating         Float?         @default(0.0)\n  createdAt      DateTime       @default(now())\n  updatedAt      DateTime       @updatedAt\n  meals          Meals[]\n  orders         Orders[]\n  reviews        Reviews[]\n\n  @@map("provider_profiles")\n}\n\nmodel Meals {\n  id          String           @id @default(uuid())\n  name        String\n  providerId  String\n  provider    ProviderProfiles @relation(fields: [providerId], references: [id])\n  description String\n  price       Float\n  category    Category         @relation(fields: [categoryId], references: [id])\n  categoryId  String\n  createdAt   DateTime         @default(now())\n  updatedAt   DateTime         @updatedAt\n  orders      Orders[]\n  reviews     Reviews[]\n\n  @@map("meals")\n}\n\nmodel Orders {\n  id         String           @id @default(uuid())\n  userId     String\n  user       User             @relation(fields: [userId], references: [id])\n  providerId String\n  provider   ProviderProfiles @relation(fields: [providerId], references: [id])\n  mealId     String\n  meal       Meals            @relation(fields: [mealId], references: [id])\n  quantity   Int\n  totalPrice Float\n  status     OrderStatus      @default(PENDING)\n  createdAt  DateTime         @default(now())\n  updatedAt  DateTime         @updatedAt\n  reviews    Reviews[]\n\n  @@map("orders")\n}\n\nmodel Reviews {\n  id                 String            @id @default(uuid())\n  userId             String\n  user               User              @relation(fields: [userId], references: [id])\n  mealId             String\n  meal               Meals             @relation(fields: [mealId], references: [id])\n  orderId            String\n  order              Orders            @relation(fields: [orderId], references: [id])\n  rating             Int\n  comment            String?\n  createdAt          DateTime          @default(now())\n  updatedAt          DateTime          @updatedAt\n  providerProfiles   ProviderProfiles? @relation(fields: [providerProfilesId], references: [id])\n  providerProfilesId String?\n\n  @@map("reviews")\n}\n\nmodel Category {\n  id          String  @id\n  cuisineType String\n  meals       Meals[]\n\n  @@map("category")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n',
+  "inlineSchema": '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../src/generated/prisma"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nenum Role {\n  CUSTOMER\n  PROVIDER\n  ADMIN\n}\n\nenum OrderStatus {\n  PENDING\n  PLACED\n  PREPARING\n  READY\n  CANCELLED\n  DELIVERED\n}\n\nmodel User {\n  id            String    @id\n  name          String\n  email         String\n  emailVerified Boolean   @default(false)\n  image         String?\n  createdAt     DateTime  @default(now())\n  updatedAt     DateTime  @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n\n  role             Role              @default(CUSTOMER)\n  phone            String?\n  status           String?           @default("ACTIVE")\n  providerProfiles ProviderProfiles?\n  orders           Orders[]\n  reviews          Reviews[]\n\n  @@unique([email])\n  @@map("user")\n}\n\nenum ProviderStatus {\n  ACTIVE\n  INACTIVE\n  PENDING\n}\n\nmodel ProviderProfiles {\n  id             String         @id @default(uuid())\n  userId         String         @unique\n  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)\n  restaurantName String\n  address        String\n  city           String\n  country        String\n  postalCode     String\n  isActive       ProviderStatus @default(PENDING)\n  phoneNumber    String\n  website        String?\n  description    String\n  rating         Float?         @default(0.0)\n  createdAt      DateTime       @default(now())\n  updatedAt      DateTime       @updatedAt\n  meals          Meals[]\n  orders         Orders[]\n  reviews        Reviews[]\n\n  @@map("provider_profiles")\n}\n\nmodel Meals {\n  id          String           @id @default(uuid())\n  name        String\n  providerId  String\n  image       String\n  provider    ProviderProfiles @relation(fields: [providerId], references: [id])\n  description String\n  price       Float\n  category    Category         @relation(fields: [categoryId], references: [id])\n  categoryId  String\n  createdAt   DateTime         @default(now())\n  updatedAt   DateTime         @updatedAt\n  orders      Orders[]\n  reviews     Reviews[]\n\n  @@map("meals")\n}\n\nmodel Orders {\n  id         String           @id @default(uuid())\n  userId     String\n  user       User             @relation(fields: [userId], references: [id])\n  providerId String\n  provider   ProviderProfiles @relation(fields: [providerId], references: [id])\n  mealId     String\n  meal       Meals            @relation(fields: [mealId], references: [id])\n  quantity   Int\n  totalPrice Float\n  status     OrderStatus      @default(PENDING)\n  createdAt  DateTime         @default(now())\n  updatedAt  DateTime         @updatedAt\n  reviews    Reviews[]\n\n  @@map("orders")\n}\n\nmodel Reviews {\n  id                 String            @id @default(uuid())\n  userId             String\n  user               User              @relation(fields: [userId], references: [id])\n  mealId             String\n  meal               Meals             @relation(fields: [mealId], references: [id])\n  orderId            String\n  order              Orders            @relation(fields: [orderId], references: [id])\n  rating             Int\n  comment            String?\n  createdAt          DateTime          @default(now())\n  updatedAt          DateTime          @updatedAt\n  providerProfiles   ProviderProfiles? @relation(fields: [providerProfilesId], references: [id])\n  providerProfilesId String?\n\n  @@map("reviews")\n}\n\nmodel Category {\n  id          String  @id @default(uuid())\n  cuisineType String\n  meals       Meals[]\n\n  @@map("category")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n',
   "runtimeDataModel": {
     "models": {},
     "enums": {},
     "types": {}
   }
 };
-config.runtimeDataModel = JSON.parse('{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"},{"name":"role","kind":"enum","type":"Role"},{"name":"phone","kind":"scalar","type":"String"},{"name":"status","kind":"scalar","type":"String"},{"name":"providerProfiles","kind":"object","type":"ProviderProfiles","relationName":"ProviderProfilesToUser"},{"name":"orders","kind":"object","type":"Orders","relationName":"OrdersToUser"},{"name":"reviews","kind":"object","type":"Reviews","relationName":"ReviewsToUser"}],"dbName":"user"},"ProviderProfiles":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"ProviderProfilesToUser"},{"name":"restaurantName","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"city","kind":"scalar","type":"String"},{"name":"country","kind":"scalar","type":"String"},{"name":"postalCode","kind":"scalar","type":"String"},{"name":"isActive","kind":"enum","type":"ProviderStatus"},{"name":"phoneNumber","kind":"scalar","type":"String"},{"name":"website","kind":"scalar","type":"String"},{"name":"description","kind":"scalar","type":"String"},{"name":"rating","kind":"scalar","type":"Float"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"meals","kind":"object","type":"Meals","relationName":"MealsToProviderProfiles"},{"name":"orders","kind":"object","type":"Orders","relationName":"OrdersToProviderProfiles"},{"name":"reviews","kind":"object","type":"Reviews","relationName":"ProviderProfilesToReviews"}],"dbName":"provider_profiles"},"Meals":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"provider","kind":"object","type":"ProviderProfiles","relationName":"MealsToProviderProfiles"},{"name":"description","kind":"scalar","type":"String"},{"name":"price","kind":"scalar","type":"Float"},{"name":"category","kind":"object","type":"Category","relationName":"CategoryToMeals"},{"name":"categoryId","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"orders","kind":"object","type":"Orders","relationName":"MealsToOrders"},{"name":"reviews","kind":"object","type":"Reviews","relationName":"MealsToReviews"}],"dbName":"meals"},"Orders":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"OrdersToUser"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"provider","kind":"object","type":"ProviderProfiles","relationName":"OrdersToProviderProfiles"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"meal","kind":"object","type":"Meals","relationName":"MealsToOrders"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"totalPrice","kind":"scalar","type":"Float"},{"name":"status","kind":"enum","type":"OrderStatus"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"reviews","kind":"object","type":"Reviews","relationName":"OrdersToReviews"}],"dbName":"orders"},"Reviews":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"ReviewsToUser"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"meal","kind":"object","type":"Meals","relationName":"MealsToReviews"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"order","kind":"object","type":"Orders","relationName":"OrdersToReviews"},{"name":"rating","kind":"scalar","type":"Int"},{"name":"comment","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"providerProfiles","kind":"object","type":"ProviderProfiles","relationName":"ProviderProfilesToReviews"},{"name":"providerProfilesId","kind":"scalar","type":"String"}],"dbName":"reviews"},"Category":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"cuisineType","kind":"scalar","type":"String"},{"name":"meals","kind":"object","type":"Meals","relationName":"CategoryToMeals"}],"dbName":"category"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"}},"enums":{},"types":{}}');
+config.runtimeDataModel = JSON.parse('{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"},{"name":"role","kind":"enum","type":"Role"},{"name":"phone","kind":"scalar","type":"String"},{"name":"status","kind":"scalar","type":"String"},{"name":"providerProfiles","kind":"object","type":"ProviderProfiles","relationName":"ProviderProfilesToUser"},{"name":"orders","kind":"object","type":"Orders","relationName":"OrdersToUser"},{"name":"reviews","kind":"object","type":"Reviews","relationName":"ReviewsToUser"}],"dbName":"user"},"ProviderProfiles":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"ProviderProfilesToUser"},{"name":"restaurantName","kind":"scalar","type":"String"},{"name":"address","kind":"scalar","type":"String"},{"name":"city","kind":"scalar","type":"String"},{"name":"country","kind":"scalar","type":"String"},{"name":"postalCode","kind":"scalar","type":"String"},{"name":"isActive","kind":"enum","type":"ProviderStatus"},{"name":"phoneNumber","kind":"scalar","type":"String"},{"name":"website","kind":"scalar","type":"String"},{"name":"description","kind":"scalar","type":"String"},{"name":"rating","kind":"scalar","type":"Float"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"meals","kind":"object","type":"Meals","relationName":"MealsToProviderProfiles"},{"name":"orders","kind":"object","type":"Orders","relationName":"OrdersToProviderProfiles"},{"name":"reviews","kind":"object","type":"Reviews","relationName":"ProviderProfilesToReviews"}],"dbName":"provider_profiles"},"Meals":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"image","kind":"scalar","type":"String"},{"name":"provider","kind":"object","type":"ProviderProfiles","relationName":"MealsToProviderProfiles"},{"name":"description","kind":"scalar","type":"String"},{"name":"price","kind":"scalar","type":"Float"},{"name":"category","kind":"object","type":"Category","relationName":"CategoryToMeals"},{"name":"categoryId","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"orders","kind":"object","type":"Orders","relationName":"MealsToOrders"},{"name":"reviews","kind":"object","type":"Reviews","relationName":"MealsToReviews"}],"dbName":"meals"},"Orders":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"OrdersToUser"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"provider","kind":"object","type":"ProviderProfiles","relationName":"OrdersToProviderProfiles"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"meal","kind":"object","type":"Meals","relationName":"MealsToOrders"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"totalPrice","kind":"scalar","type":"Float"},{"name":"status","kind":"enum","type":"OrderStatus"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"reviews","kind":"object","type":"Reviews","relationName":"OrdersToReviews"}],"dbName":"orders"},"Reviews":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"ReviewsToUser"},{"name":"mealId","kind":"scalar","type":"String"},{"name":"meal","kind":"object","type":"Meals","relationName":"MealsToReviews"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"order","kind":"object","type":"Orders","relationName":"OrdersToReviews"},{"name":"rating","kind":"scalar","type":"Int"},{"name":"comment","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"providerProfiles","kind":"object","type":"ProviderProfiles","relationName":"ProviderProfilesToReviews"},{"name":"providerProfilesId","kind":"scalar","type":"String"}],"dbName":"reviews"},"Category":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"cuisineType","kind":"scalar","type":"String"},{"name":"meals","kind":"object","type":"Meals","relationName":"CategoryToMeals"}],"dbName":"category"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"}},"enums":{},"types":{}}');
 async function decodeBase64AsWasm(wasmBase64) {
   const { Buffer } = await import("buffer");
   const wasmArray = Buffer.from(wasmBase64, "base64");
@@ -59,6 +59,11 @@ var TransactionIsolationLevel = runtime2.makeStrictEnum({
 var defineExtension = runtime2.Extensions.defineExtension;
 
 // src/generated/prisma/enums.ts
+var Role = {
+  CUSTOMER: "CUSTOMER",
+  PROVIDER: "PROVIDER",
+  ADMIN: "ADMIN"
+};
 var ProviderStatus = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
@@ -384,10 +389,38 @@ var getProviderProfilesRequest = async (page) => {
   });
   return { result, totalPages };
 };
+var updateProviderProfilesRequest = async (id, data) => {
+  const userID = await prisma.providerProfiles.findUnique({
+    where: {
+      id
+    },
+    select: {
+      userId: true
+    }
+  });
+  if (data.isActive === ProviderStatus.ACTIVE) {
+    await prisma.user.update({
+      where: {
+        id: userID?.userId
+      },
+      data: {
+        role: Role.PROVIDER
+      }
+    });
+  }
+  const result = await prisma.providerProfiles.update({
+    where: {
+      id
+    },
+    data
+  });
+  return result;
+};
 var providerProfilesServices = {
   createProviderProfiles,
   getAllProviderProfiles,
   updateProviderProfiles,
+  updateProviderProfilesRequest,
   getProviderProfilesRequest
 };
 
@@ -461,9 +494,28 @@ var updateProviderProfiles2 = async (req, res) => {
     });
   }
 };
+var updateProviderProfilesRequest2 = async (req, res) => {
+  const { id } = req.params;
+  const providerProfile = req.body;
+  const result = await providerProfilesServices.updateProviderProfilesRequest(id, providerProfile);
+  try {
+    res.status(201).json({
+      success: true,
+      message: "Provider profile request updated successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
 var ProviderProfilesController = {
   createProviderProfiles: createProviderProfiles2,
   getAllProviderProfiles: getAllProviderProfiles2,
+  updateProviderProfilesRequest: updateProviderProfilesRequest2,
   updateProviderProfiles: updateProviderProfiles2,
   getProviderProfilesRequest: getProviderProfilesRequest2
 };
@@ -500,6 +552,14 @@ var auth2 = (...roles) => {
         role: session.user.role,
         emailVerified: session.user.emailVerified
       };
+      if (req.user.role === "PROVIDER" /* PROVIDER */) {
+        const provider = await prisma.providerProfiles.findUnique({
+          where: {
+            userId: req.user.id
+          }
+        });
+        req.user.providerId = provider?.id;
+      }
       next();
     } catch (err) {
       return res.status(401).json({
@@ -522,8 +582,13 @@ router.post(
 router.get("/requests", auth_default("ADMIN" /* ADMIN */), ProviderProfilesController.getProviderProfilesRequest);
 router.patch(
   "/:id",
-  auth_default("ADMIN" /* ADMIN */),
+  auth_default("PROVIDER" /* PROVIDER */),
   ProviderProfilesController.updateProviderProfiles
+);
+router.patch(
+  "/requests/:id",
+  auth_default("ADMIN" /* ADMIN */),
+  ProviderProfilesController.updateProviderProfilesRequest
 );
 router.get(
   "/",
@@ -645,10 +710,46 @@ var deleteMeals = async (id) => {
   });
   return result;
 };
+var getAllMeals = async () => {
+  const result = await prisma.meals.findMany({
+    select: {
+      id: true,
+      name: true,
+      price: true,
+      category: true,
+      image: true,
+      description: true
+    }
+  });
+  return result;
+};
+var getAllCategories = async () => {
+  const result = await prisma.category.findMany();
+  return result;
+};
+var createCategories = async (category) => {
+  const result = await prisma.category.create({
+    data: { ...category }
+  });
+  return result;
+};
+var updateCategories = async (id, updatedData) => {
+  const result = await prisma.category.update({
+    where: {
+      id
+    },
+    data: updatedData
+  });
+  return result;
+};
 var MealsServices = {
   createMeals,
+  createCategories,
   updateMeals,
-  deleteMeals
+  updateCategories,
+  deleteMeals,
+  getAllMeals,
+  getAllCategories
 };
 
 // src/modules/Meals/Meals.controller.ts
@@ -704,17 +805,92 @@ var deleteMeals2 = async (req, res) => {
     });
   }
 };
+var getAllMeals2 = async (req, res) => {
+  try {
+    const result = await MealsServices.getAllMeals();
+    res.status(201).json({
+      success: true,
+      message: "Meals fetched successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var getAllCategories2 = async (req, res) => {
+  try {
+    const result = await MealsServices.getAllCategories();
+    res.status(201).json({
+      success: true,
+      message: "Categories fetched successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var createCategories2 = async (req, res) => {
+  const category = req.body;
+  try {
+    const result = await MealsServices.createCategories(category);
+    res.status(201).json({
+      success: true,
+      message: "Category created successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var updateCategories2 = async (req, res) => {
+  const { id } = req.params;
+  const category = req.body;
+  try {
+    const result = await MealsServices.updateCategories(id, category);
+    res.status(201).json({
+      success: true,
+      message: "Category updated successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
 var MealsController = {
   createMeals: createMeals2,
+  createCategories: createCategories2,
+  getAllCategories: getAllCategories2,
   updateMeals: updateMeals2,
-  deleteMeals: deleteMeals2
+  deleteMeals: deleteMeals2,
+  updateCategories: updateCategories2,
+  getAllMeals: getAllMeals2
 };
 
 // src/modules/Meals/Meals.routes.ts
 var router3 = Router3();
-router3.post("/meals", MealsController.createMeals);
-router3.patch("/meals/:id", MealsController.updateMeals);
-router3.delete("/meals/:id", MealsController.deleteMeals);
+router3.get("/", MealsController.getAllMeals);
+router3.post("/", MealsController.createMeals);
+router3.patch("/:id", MealsController.updateMeals);
+router3.delete("/:id", MealsController.deleteMeals);
+router3.get("/categories", auth_default("ADMIN" /* ADMIN */, "PROVIDER" /* PROVIDER */), MealsController.getAllCategories);
+router3.post("/categories", auth_default("ADMIN" /* ADMIN */), MealsController.createCategories);
+router3.patch("/categories/:id", auth_default("ADMIN" /* ADMIN */), MealsController.updateCategories);
 var MealsRoutes = router3;
 
 // src/app.ts
