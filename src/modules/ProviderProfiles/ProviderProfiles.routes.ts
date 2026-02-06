@@ -24,4 +24,9 @@ router.get(
   auth(UserRoles.ADMIN),
   ProviderProfilesController.getAllProviderProfiles,
 );
+router.get(
+  "/myProviderProfile",
+  auth(UserRoles.PROVIDER,UserRoles.CUSTOMER),
+  ProviderProfilesController.getProviderProfilesById,
+);
 export const ProviderProfilesRoutes: Router = router;

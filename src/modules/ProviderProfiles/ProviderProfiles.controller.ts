@@ -97,11 +97,28 @@ const updateProviderProfilesRequest = async (req: Request, res: Response) => {
     });
   }
 };
-  
+const getProviderProfilesById = async (req: Request, res: Response) => {
+ const id =  req?.user?.id as string;
+  const result = await providerProfilesServices.getProviderProfilesById(id);
+  try {
+    res.status(201).json({
+      success: true,
+      message: "Provider profile retrieved successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
 export const ProviderProfilesController = {
   createProviderProfiles,
   getAllProviderProfiles,
   updateProviderProfilesRequest,
   updateProviderProfiles,
   getProviderProfilesRequest,
+  getProviderProfilesById,
 }

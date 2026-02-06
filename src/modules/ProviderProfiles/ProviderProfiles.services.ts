@@ -11,7 +11,14 @@ const getAllProviderProfiles = async (page: number) => {
     Math.ceil(
       (await prisma.providerProfiles.count({
         where: {
-          isActive: ProviderStatus.ACTIVE,
+          OR: [
+            {
+              isActive: ProviderStatus.INACTIVE,
+            },
+            {
+              isActive: ProviderStatus.ACTIVE,
+            },
+          ],
         },
       })) / 15,
     ) || 1;
@@ -19,7 +26,14 @@ const getAllProviderProfiles = async (page: number) => {
     take: 15,
     skip: (page - 1) * 15,
     where: {
-      isActive: ProviderStatus.ACTIVE,
+      OR: [
+        {
+          isActive: ProviderStatus.INACTIVE,
+        },
+        {
+          isActive: ProviderStatus.ACTIVE,
+        },
+      ],
     },
   });
   return { result, totalPages };
@@ -92,18 +106,26 @@ const updateProviderProfilesRequest = async (
     },
   });
 
-  
-    if(data.isActive===ProviderStatus.ACTIVE){
-      await prisma.user.update({
-        where: {
-          id: userID?.userId,
-        },
-        data: {
-          role: Role.PROVIDER,
-        },
-      });
-    }
- 
+  if (data.isActive === ProviderStatus.ACTIVE) {
+    await prisma.user.update({
+      where: {
+        id: userID?.userId,
+      },
+      data: {
+        role: Role.PROVIDER,
+      },
+    });
+  }
+  if (data.isActive === ProviderStatus.INACTIVE) {
+    await prisma.user.update({
+      where: {
+        id: userID?.userId,
+      },
+      data: {
+        role: Role.CUSTOMER,
+      },
+    });
+  }
   const result = await prisma.providerProfiles.update({
     where: {
       id,
@@ -112,10 +134,18 @@ const updateProviderProfilesRequest = async (
   });
   return result;
 };
-
+const getProviderProfilesById = async (id: string) => {
+  const result = await prisma.providerProfiles.findUnique({
+    where: {
+      userId: id,
+    },
+  });
+  return result;
+};
 export const providerProfilesServices = {
   createProviderProfiles,
   getAllProviderProfiles,
+  getProviderProfilesById,
   updateProviderProfiles,
   updateProviderProfilesRequest,
   getProviderProfilesRequest,

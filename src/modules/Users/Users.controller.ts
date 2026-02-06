@@ -9,8 +9,6 @@ const getAllUsers = async (req: Request, res: Response) => {
       success: true,
       message: "Users retrieved successfully",
       data: result,
-      
-      
     });
   } catch (error: any) {
     res.status(500).json({
@@ -39,11 +37,26 @@ const updateUserRole = async (req: Request, res: Response) => {
   }
 };
 
-
-
+const verifyEmail = async (req: Request, res: Response) => {
+  const { token } = req.body;
+  const result = await userServices.verifyEmail(token as string);
+  try {
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+      data: result,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
 
 export const userControllers = {
   getAllUsers,
   updateUserRole,
-  
+  verifyEmail,
 };

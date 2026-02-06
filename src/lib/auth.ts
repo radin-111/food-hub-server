@@ -236,6 +236,7 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: isProd ? "none" : "lax",
       secure: isProd,
+      
     },
 
     crossSubDomainCookies: {

@@ -318,6 +318,7 @@ var auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: isProd ? "none" : "lax",
       secure: isProd
+      // domain: isProd ? "food-hub-client-alpha.vercel.app" : undefined,
     },
     crossSubDomainCookies: {
       enabled: isProd
@@ -602,17 +603,15 @@ import { Router as Router2 } from "express";
 
 // src/modules/Users/Users.services.ts
 var getAllUsers = async (page) => {
-  const users = await prisma.user.findMany(
-    {
-      take: 15,
-      skip: (page - 1) * 15,
-      select: {
-        id: true,
-        email: true,
-        role: true
-      }
+  const users = await prisma.user.findMany({
+    take: 15,
+    skip: (page - 1) * 15,
+    select: {
+      id: true,
+      email: true,
+      role: true
     }
-  );
+  });
   const totalUsers = await prisma.user.count();
   const totalPages = Math.ceil(totalUsers / 15);
   return {
@@ -631,9 +630,18 @@ var updateUserRole = async (id, role) => {
   });
   return result;
 };
+var verifyEmail = async (token) => {
+  const result = await auth.api.verifyEmail({
+    query: {
+      token
+    }
+  });
+  return result;
+};
 var userServices = {
   getAllUsers,
-  updateUserRole
+  updateUserRole,
+  verifyEmail
 };
 
 // src/modules/Users/Users.controller.ts
@@ -672,13 +680,32 @@ var updateUserRole2 = async (req, res) => {
     });
   }
 };
+var verifyEmail2 = async (req, res) => {
+  const { token } = req.body;
+  const result = await userServices.verifyEmail(token);
+  try {
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message
+    });
+  }
+};
 var userControllers = {
   getAllUsers: getAllUsers2,
-  updateUserRole: updateUserRole2
+  updateUserRole: updateUserRole2,
+  verifyEmail: verifyEmail2
 };
 
 // src/modules/Users/Users.routes.ts
 var router2 = Router2();
+router2.post("/verify-email", userControllers.verifyEmail);
 router2.get("/", auth_default("ADMIN" /* ADMIN */), userControllers.getAllUsers);
 router2.patch("/:id/role", auth_default("ADMIN" /* ADMIN */), userControllers.updateUserRole);
 var UsersRoutes = router2;
