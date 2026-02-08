@@ -318,7 +318,6 @@ var auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: isProd ? "none" : "lax",
       secure: isProd
-      // domain: isProd ? "food-hub-client-alpha.vercel.app" : undefined,
     },
     crossSubDomainCookies: {
       enabled: isProd
@@ -334,7 +333,14 @@ var getAllProviderProfiles = async (page) => {
   const totalPages = Math.ceil(
     await prisma.providerProfiles.count({
       where: {
-        isActive: ProviderStatus.ACTIVE
+        OR: [
+          {
+            isActive: ProviderStatus.INACTIVE
+          },
+          {
+            isActive: ProviderStatus.ACTIVE
+          }
+        ]
       }
     }) / 15
   ) || 1;
@@ -342,7 +348,14 @@ var getAllProviderProfiles = async (page) => {
     take: 15,
     skip: (page - 1) * 15,
     where: {
-      isActive: ProviderStatus.ACTIVE
+      OR: [
+        {
+          isActive: ProviderStatus.INACTIVE
+        },
+        {
+          isActive: ProviderStatus.ACTIVE
+        }
+      ]
     }
   });
   return { result, totalPages };
@@ -409,6 +422,16 @@ var updateProviderProfilesRequest = async (id, data) => {
       }
     });
   }
+  if (data.isActive === ProviderStatus.INACTIVE) {
+    await prisma.user.update({
+      where: {
+        id: userID?.userId
+      },
+      data: {
+        role: Role.CUSTOMER
+      }
+    });
+  }
   const result = await prisma.providerProfiles.update({
     where: {
       id
@@ -417,9 +440,18 @@ var updateProviderProfilesRequest = async (id, data) => {
   });
   return result;
 };
+var getProviderProfilesById = async (id) => {
+  const result = await prisma.providerProfiles.findUnique({
+    where: {
+      userId: id
+    }
+  });
+  return result;
+};
 var providerProfilesServices = {
   createProviderProfiles,
   getAllProviderProfiles,
+  getProviderProfilesById,
   updateProviderProfiles,
   updateProviderProfilesRequest,
   getProviderProfilesRequest
@@ -513,12 +545,30 @@ var updateProviderProfilesRequest2 = async (req, res) => {
     });
   }
 };
+var getProviderProfilesById2 = async (req, res) => {
+  const id = req?.user?.id;
+  const result = await providerProfilesServices.getProviderProfilesById(id);
+  try {
+    res.status(201).json({
+      success: true,
+      message: "Provider profile retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
 var ProviderProfilesController = {
   createProviderProfiles: createProviderProfiles2,
   getAllProviderProfiles: getAllProviderProfiles2,
   updateProviderProfilesRequest: updateProviderProfilesRequest2,
   updateProviderProfiles: updateProviderProfiles2,
-  getProviderProfilesRequest: getProviderProfilesRequest2
+  getProviderProfilesRequest: getProviderProfilesRequest2,
+  getProviderProfilesById: getProviderProfilesById2
 };
 
 // src/middlewares/auth.ts
@@ -595,6 +645,11 @@ router.get(
   "/",
   auth_default("ADMIN" /* ADMIN */),
   ProviderProfilesController.getAllProviderProfiles
+);
+router.get(
+  "/myProviderProfile",
+  auth_default("PROVIDER" /* PROVIDER */, "CUSTOMER" /* CUSTOMER */),
+  ProviderProfilesController.getProviderProfilesById
 );
 var ProviderProfilesRoutes = router;
 
@@ -714,9 +769,9 @@ var UsersRoutes = router2;
 import { Router as Router3 } from "express";
 
 // src/modules/Meals/Meals.services.ts
-var createMeals = async (meal) => {
+var createMeals = async (meal, providerId) => {
   const result = await prisma.meals.create({
-    data: meal
+    data: { ...meal, providerId }
   });
   return result;
 };
@@ -737,8 +792,27 @@ var deleteMeals = async (id) => {
   });
   return result;
 };
-var getAllMeals = async () => {
+var getAllMeals = async (page, search) => {
+  const totalMeals = await prisma.meals.count({
+    where: {
+      name: {
+        contains: search
+      }
+    }
+  });
+  const totalPages = Math.ceil(totalMeals / 9);
   const result = await prisma.meals.findMany({
+    take: 9,
+    skip: (page - 1) * 9,
+    where: {
+      OR: [
+        {
+          name: {
+            contains: search
+          }
+        }
+      ]
+    },
     select: {
       id: true,
       name: true,
@@ -748,7 +822,10 @@ var getAllMeals = async () => {
       description: true
     }
   });
-  return result;
+  return {
+    result,
+    totalPages
+  };
 };
 var getAllCategories = async () => {
   const result = await prisma.category.findMany();
@@ -769,6 +846,28 @@ var updateCategories = async (id, updatedData) => {
   });
   return result;
 };
+var getMyMeals = async (providerId, page) => {
+  const totalMeals = await prisma.meals.count({
+    where: {
+      providerId
+    }
+  });
+  const totalPages = Math.ceil(totalMeals / 15);
+  const result = await prisma.meals.findMany({
+    take: 15,
+    skip: (page - 1) * 15,
+    where: {
+      providerId
+    },
+    include: {
+      category: true
+    }
+  });
+  return {
+    result,
+    totalPages
+  };
+};
 var MealsServices = {
   createMeals,
   createCategories,
@@ -776,14 +875,16 @@ var MealsServices = {
   updateCategories,
   deleteMeals,
   getAllMeals,
+  getMyMeals,
   getAllCategories
 };
 
 // src/modules/Meals/Meals.controller.ts
 var createMeals2 = async (req, res) => {
   const meal = req.body;
+  const providerId = req.user?.providerId;
   try {
-    const result = await MealsServices.createMeals(meal);
+    const result = await MealsServices.createMeals(meal, providerId);
     res.status(201).json({
       success: true,
       message: "Meals created successfully",
@@ -834,7 +935,9 @@ var deleteMeals2 = async (req, res) => {
 };
 var getAllMeals2 = async (req, res) => {
   try {
-    const result = await MealsServices.getAllMeals();
+    const page = Number(req.query.page) || 1;
+    const search = req.query.search;
+    const result = await MealsServices.getAllMeals(page, search);
     res.status(201).json({
       success: true,
       message: "Meals fetched successfully",
@@ -899,12 +1002,31 @@ var updateCategories2 = async (req, res) => {
     });
   }
 };
+var getMyMeals2 = async (req, res) => {
+  const providerId = req.user?.providerId;
+  const page = Number(req.query.page) || 1;
+  try {
+    const result = await MealsServices.getMyMeals(providerId, page);
+    res.status(201).json({
+      success: true,
+      message: "Meals fetched successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
 var MealsController = {
   createMeals: createMeals2,
   createCategories: createCategories2,
   getAllCategories: getAllCategories2,
   updateMeals: updateMeals2,
   deleteMeals: deleteMeals2,
+  getMyMeals: getMyMeals2,
   updateCategories: updateCategories2,
   getAllMeals: getAllMeals2
 };
@@ -912,10 +1034,11 @@ var MealsController = {
 // src/modules/Meals/Meals.routes.ts
 var router3 = Router3();
 router3.get("/", MealsController.getAllMeals);
-router3.post("/", MealsController.createMeals);
-router3.patch("/:id", MealsController.updateMeals);
-router3.delete("/:id", MealsController.deleteMeals);
-router3.get("/categories", auth_default("ADMIN" /* ADMIN */, "PROVIDER" /* PROVIDER */), MealsController.getAllCategories);
+router3.get("/myMeals", auth_default("PROVIDER" /* PROVIDER */), MealsController.getMyMeals);
+router3.post("/", auth_default("PROVIDER" /* PROVIDER */), MealsController.createMeals);
+router3.patch("/:id", auth_default("PROVIDER" /* PROVIDER */), MealsController.updateMeals);
+router3.delete("/:id", auth_default("PROVIDER" /* PROVIDER */), MealsController.deleteMeals);
+router3.get("/categories", MealsController.getAllCategories);
 router3.post("/categories", auth_default("ADMIN" /* ADMIN */), MealsController.createCategories);
 router3.patch("/categories/:id", auth_default("ADMIN" /* ADMIN */), MealsController.updateCategories);
 var MealsRoutes = router3;

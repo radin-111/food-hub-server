@@ -4,11 +4,11 @@ import { MealsServices } from "./Meals.services";
 import { type Request, type Response } from "express";
 
 const createMeals = async (req: Request, res: Response) => {
+  const meal = req.body;
+  const providerId = req.user?.providerId as string;
 
-    
-  const meal   = req.body;
   try {
-    const result = await MealsServices.createMeals(meal);
+    const result = await MealsServices.createMeals(meal, providerId);
     res.status(201).json({
       success: true,
       message: "Meals created successfully",
@@ -21,7 +21,7 @@ const createMeals = async (req: Request, res: Response) => {
       error,
     });
   }
-}
+};
 
 const updateMeals = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -40,7 +40,7 @@ const updateMeals = async (req: Request, res: Response) => {
       error,
     });
   }
-}
+};
 
 const deleteMeals = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -58,11 +58,13 @@ const deleteMeals = async (req: Request, res: Response) => {
       error,
     });
   }
-}
+};
 
 const getAllMeals = async (req: Request, res: Response) => {
   try {
-    const result = await MealsServices.getAllMeals();
+    const page = Number(req.query.page) || 1;
+    const search = req.query.search as string;
+    const result = await MealsServices.getAllMeals(page,search);  
     res.status(201).json({
       success: true,
       message: "Meals fetched successfully",
@@ -75,7 +77,7 @@ const getAllMeals = async (req: Request, res: Response) => {
       error,
     });
   }
-}
+};
 
 const getAllCategories = async (req: Request, res: Response) => {
   try {
@@ -92,12 +94,11 @@ const getAllCategories = async (req: Request, res: Response) => {
       error,
     });
   }
-}
+};
 
 const createCategories = async (req: Request, res: Response) => {
   const category = req.body;
- 
-  
+
   try {
     const result = await MealsServices.createCategories(category);
     res.status(201).json({
@@ -112,7 +113,7 @@ const createCategories = async (req: Request, res: Response) => {
       error,
     });
   }
-}
+};
 
 const updateCategories = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -131,7 +132,28 @@ const updateCategories = async (req: Request, res: Response) => {
       error,
     });
   }
-}
+};
+
+const getMyMeals = async (req: Request, res: Response) => {
+  const providerId = req.user?.providerId as string;
+  const page = Number(req.query.page) || 1;
+  try {
+    const result = await MealsServices.getMyMeals(providerId,page);
+    res.status(201).json({
+      success: true,
+      message: "Meals fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
+
+
 
 export const MealsController = {
   createMeals,
@@ -139,6 +161,7 @@ export const MealsController = {
   getAllCategories,
   updateMeals,
   deleteMeals,
+  getMyMeals,
   updateCategories,
   getAllMeals,
-}
+};
