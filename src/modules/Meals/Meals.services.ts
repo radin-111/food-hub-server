@@ -1,15 +1,14 @@
 import { Meals } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
-const createMeals = async (meal: Meals,providerId: string) => {
+const createMeals = async (meal: Meals, providerId: string) => {
   const result = await prisma.meals.create({
-    data: {...meal,providerId},
+    data: { ...meal, providerId },
   });
   return result;
 };
 
 const updateMeals = async (id: string, updatedData: any) => {
-  
   const result = await prisma.meals.update({
     where: {
       id,
@@ -28,7 +27,7 @@ const deleteMeals = async (id: string) => {
   return result;
 };
 
-const getAllMeals = async (page: number,search: string) => {
+const getAllMeals = async (page: number, search: string) => {
   const totalMeals = await prisma.meals.count({
     where: {
       name: {
@@ -38,8 +37,8 @@ const getAllMeals = async (page: number,search: string) => {
   });
   const totalPages = Math.ceil(totalMeals / 9);
   const result = await prisma.meals.findMany({
-    take:9,
-    skip:(page-1)*9,
+    take: 9,
+    skip: (page - 1) * 9,
     where: {
       OR: [
         {
@@ -47,7 +46,6 @@ const getAllMeals = async (page: number,search: string) => {
             contains: search,
           },
         },
-        
       ],
     },
     select: {
@@ -72,13 +70,12 @@ const getAllCategories = async () => {
 
 const createCategories = async (category: any) => {
   const result = await prisma.category.create({
-    data: {...category},
+    data: { ...category },
   });
   return result;
 };
 
 const updateCategories = async (id: string, updatedData: any) => {
-  
   const result = await prisma.category.update({
     where: {
       id,
@@ -88,7 +85,7 @@ const updateCategories = async (id: string, updatedData: any) => {
   return result;
 };
 
-const getMyMeals = async (providerId: string,page: number) => {
+const getMyMeals = async (providerId: string, page: number) => {
   const totalMeals = await prisma.meals.count({
     where: {
       providerId,
@@ -101,9 +98,9 @@ const getMyMeals = async (providerId: string,page: number) => {
     where: {
       providerId,
     },
-    include:{
-      category:true
-    }
+    include: {
+      category: true,
+    },
   });
   return {
     result,
@@ -111,10 +108,23 @@ const getMyMeals = async (providerId: string,page: number) => {
   };
 };
 
+const getMealsById = async (id: string) => {
+  const result = await prisma.meals.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      category: true,
+    },
+  });
+  return result;
+};
+
 export const MealsServices = {
   createMeals,
   createCategories,
   updateMeals,
+  getMealsById,
   updateCategories,
   deleteMeals,
   getAllMeals,

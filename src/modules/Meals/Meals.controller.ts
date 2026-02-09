@@ -153,12 +153,31 @@ const getMyMeals = async (req: Request, res: Response) => {
   }
 };
 
+const getMealsById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const result = await MealsServices.getMealsById(id as string);
+    res.status(201).json({
+      success: true,
+      message: "Meals fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
+
 
 
 export const MealsController = {
   createMeals,
   createCategories,
   getAllCategories,
+  getMealsById,
   updateMeals,
   deleteMeals,
   getMyMeals,
