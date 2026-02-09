@@ -33,6 +33,9 @@ const getAllMeals = async (page: number, search: string) => {
       name: {
         contains: search,
       },
+      description: {
+        contains: search,
+      },
     },
   });
   const totalPages = Math.ceil(totalMeals / 9);
@@ -115,6 +118,13 @@ const getMealsById = async (id: string) => {
     },
     include: {
       category: true,
+      provider: {
+        select: {
+          id: true,
+          restaurantName: true,
+        },
+      },
+      reviews: true,
     },
   });
   return result;
