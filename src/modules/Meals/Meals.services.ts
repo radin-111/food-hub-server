@@ -30,12 +30,30 @@ const deleteMeals = async (id: string) => {
 const getAllMeals = async (page: number, search: string) => {
   const totalMeals = await prisma.meals.count({
     where: {
-      name: {
-        contains: search,
-      },
-      description: {
-        contains: search,
-      },
+      OR: [
+        {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: search,
+            mode: "insensitive",
+          },
+        },
+        {
+          category: {
+            is: {
+              cuisineType: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          },
+        },
+      ],
     },
   });
   const totalPages = Math.ceil(totalMeals / 9);

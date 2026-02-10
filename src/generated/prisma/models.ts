@@ -11,6 +11,7 @@
 export type * from './models/User.js'
 export type * from './models/ProviderProfiles.js'
 export type * from './models/Meals.js'
+export type * from './models/Cart.js'
 export type * from './models/Orders.js'
 export type * from './models/Reviews.js'
 export type * from './models/Category.js'

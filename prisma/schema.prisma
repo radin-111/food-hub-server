@@ -18,14 +18,15 @@ enum Role {
   PROVIDER
   ADMIN
 }
+
 enum OrderStatus {
-  PENDING
   PLACED
   PREPARING
   READY
   CANCELLED
   DELIVERED
 }
+
 model User {
   id            String    @id
   name          String
@@ -43,6 +44,7 @@ model User {
   providerProfiles ProviderProfiles?
   orders           Orders[]
   reviews          Reviews[]
+  carts            Cart[]
 
   @@unique([email])
   @@map("user")
@@ -73,6 +75,7 @@ model ProviderProfiles {
   meals          Meals[]
   orders         Orders[]
   reviews        Reviews[]
+  carts          Cart[]
 
   @@map("provider_profiles")
 }
@@ -91,8 +94,19 @@ model Meals {
   updatedAt   DateTime         @updatedAt
   orders      Orders[]
   reviews     Reviews[]
+  carts       Cart[]
 
   @@map("meals")
+}
+
+model Cart {
+  id         String           @id @default(uuid())
+  userId     String
+  providerId String
+  provider   ProviderProfiles @relation(fields: [providerId], references: [id])
+  user       User             @relation(fields: [userId], references: [id])
+  mealId     String
+  meal       Meals            @relation(fields: [mealId], references: [id])
 }
 
 model Orders {
@@ -105,7 +119,7 @@ model Orders {
   meal       Meals            @relation(fields: [mealId], references: [id])
   quantity   Int
   totalPrice Float
-  status     OrderStatus      @default(PENDING)
+  status     OrderStatus      @default(PLACED)
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
   reviews    Reviews[]
@@ -130,8 +144,6 @@ model Reviews {
 
   @@map("reviews")
 }
-
-
 
 model Category {
   id          String  @id @default(uuid())

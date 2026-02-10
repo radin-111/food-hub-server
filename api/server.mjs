@@ -101,7 +101,6 @@ var auth = betterAuth({
     prisma,
     {
       provider: "postgresql"
-      // or "mysql", "postgresql", ...etc
     }
   ),
   baseURL: process.env.BETTER_AUTH_URL,
@@ -440,10 +439,36 @@ var updateProviderProfilesRequest = async (id, data) => {
   });
   return result;
 };
-var getProviderProfilesById = async (id) => {
+var getMyProviderProfile = async (id) => {
   const result = await prisma.providerProfiles.findUnique({
     where: {
       userId: id
+    }
+  });
+  return result;
+};
+var getProviderProfilesById = async (id) => {
+  const result = await prisma.providerProfiles.findUnique({
+    where: {
+      id
+    },
+    select: {
+      id: true,
+      isActive: true,
+      phoneNumber: true,
+      address: true,
+      description: true,
+      user: {
+        select: {
+          image: true
+        }
+      },
+      country: true,
+      city: true,
+      reviews: true,
+      meals: true,
+      restaurantName: true,
+      postalCode: true
     }
   });
   return result;
@@ -452,6 +477,7 @@ var providerProfilesServices = {
   createProviderProfiles,
   getAllProviderProfiles,
   getProviderProfilesById,
+  getMyProviderProfile,
   updateProviderProfiles,
   updateProviderProfilesRequest,
   getProviderProfilesRequest
@@ -545,8 +571,25 @@ var updateProviderProfilesRequest2 = async (req, res) => {
     });
   }
 };
-var getProviderProfilesById2 = async (req, res) => {
+var getMyProviderProfile2 = async (req, res) => {
   const id = req?.user?.id;
+  const result = await providerProfilesServices.getMyProviderProfile(id);
+  try {
+    res.status(201).json({
+      success: true,
+      message: "Provider profile retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var getProviderProfilesById2 = async (req, res) => {
+  const { id } = req.params;
   const result = await providerProfilesServices.getProviderProfilesById(id);
   try {
     res.status(201).json({
@@ -568,7 +611,8 @@ var ProviderProfilesController = {
   updateProviderProfilesRequest: updateProviderProfilesRequest2,
   updateProviderProfiles: updateProviderProfiles2,
   getProviderProfilesRequest: getProviderProfilesRequest2,
-  getProviderProfilesById: getProviderProfilesById2
+  getProviderProfilesById: getProviderProfilesById2,
+  getMyProviderProfile: getMyProviderProfile2
 };
 
 // src/middlewares/auth.ts
@@ -649,8 +693,9 @@ router.get(
 router.get(
   "/myProviderProfile",
   auth_default("PROVIDER" /* PROVIDER */, "CUSTOMER" /* CUSTOMER */),
-  ProviderProfilesController.getProviderProfilesById
+  ProviderProfilesController.getMyProviderProfile
 );
+router.get("/:id", ProviderProfilesController.getProviderProfilesById);
 var ProviderProfilesRoutes = router;
 
 // src/modules/Users/Users.routes.ts
@@ -797,6 +842,9 @@ var getAllMeals = async (page, search) => {
     where: {
       name: {
         contains: search
+      },
+      description: {
+        contains: search
       }
     }
   });
@@ -868,10 +916,29 @@ var getMyMeals = async (providerId, page) => {
     totalPages
   };
 };
+var getMealsById = async (id) => {
+  const result = await prisma.meals.findUnique({
+    where: {
+      id
+    },
+    include: {
+      category: true,
+      provider: {
+        select: {
+          id: true,
+          restaurantName: true
+        }
+      },
+      reviews: true
+    }
+  });
+  return result;
+};
 var MealsServices = {
   createMeals,
   createCategories,
   updateMeals,
+  getMealsById,
   updateCategories,
   deleteMeals,
   getAllMeals,
@@ -1020,10 +1087,28 @@ var getMyMeals2 = async (req, res) => {
     });
   }
 };
+var getMealsById2 = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await MealsServices.getMealsById(id);
+    res.status(201).json({
+      success: true,
+      message: "Meals fetched successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
 var MealsController = {
   createMeals: createMeals2,
   createCategories: createCategories2,
   getAllCategories: getAllCategories2,
+  getMealsById: getMealsById2,
   updateMeals: updateMeals2,
   deleteMeals: deleteMeals2,
   getMyMeals: getMyMeals2,
@@ -1034,6 +1119,7 @@ var MealsController = {
 // src/modules/Meals/Meals.routes.ts
 var router3 = Router3();
 router3.get("/", MealsController.getAllMeals);
+router3.get("/:id", MealsController.getMealsById);
 router3.get("/myMeals", auth_default("PROVIDER" /* PROVIDER */), MealsController.getMyMeals);
 router3.post("/", auth_default("PROVIDER" /* PROVIDER */), MealsController.createMeals);
 router3.patch("/:id", auth_default("PROVIDER" /* PROVIDER */), MealsController.updateMeals);

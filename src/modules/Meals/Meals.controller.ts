@@ -1,4 +1,4 @@
-import { Meals } from "../../generated/prisma/client";
+
 import { MealsServices } from "./Meals.services";
 
 import { type Request, type Response } from "express";

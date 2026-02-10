@@ -33,6 +33,11 @@ export type ProviderProfiles = Prisma.ProviderProfilesModel
  */
 export type Meals = Prisma.MealsModel
 /**
+ * Model Cart
+ * 
+ */
+export type Cart = Prisma.CartModel
+/**
  * Model Orders
  * 
  */
