@@ -27,6 +27,8 @@ router.get(
 router.get(
   "/myProviderProfile",
   auth(UserRoles.PROVIDER,UserRoles.CUSTOMER),
-  ProviderProfilesController.getProviderProfilesById,
+  ProviderProfilesController.getMyProviderProfile,
 );
+router.get("/:id",ProviderProfilesController.getProviderProfilesById);
+
 export const ProviderProfilesRoutes: Router = router;

@@ -18,7 +18,7 @@ export const auth = betterAuth({
     prisma,
 
     {
-      provider: "postgresql", // or "mysql", "postgresql", ...etc
+      provider: "postgresql", 
     },
   ),
   baseURL: process.env.BETTER_AUTH_URL,

@@ -134,7 +134,7 @@ const updateProviderProfilesRequest = async (
   });
   return result;
 };
-const getProviderProfilesById = async (id: string) => {
+const getMyProviderProfile = async (id: string) => {
   const result = await prisma.providerProfiles.findUnique({
     where: {
       userId: id,
@@ -142,10 +142,40 @@ const getProviderProfilesById = async (id: string) => {
   });
   return result;
 };
+const getProviderProfilesById = async (id: string) => {
+  const result = await prisma.providerProfiles.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+
+      isActive: true,
+      phoneNumber: true,
+      address: true,
+      description: true,
+
+      user: {
+        select: {
+          image: true,
+        },
+      },
+      country: true,
+      city: true,
+      reviews: true,
+      meals: true,
+      restaurantName: true,
+      postalCode: true,
+    },
+  });
+  return result;
+};
+
 export const providerProfilesServices = {
   createProviderProfiles,
   getAllProviderProfiles,
   getProviderProfilesById,
+  getMyProviderProfile,
   updateProviderProfiles,
   updateProviderProfilesRequest,
   getProviderProfilesRequest,
