@@ -21,8 +21,9 @@ const addToCart=async(req:Request,res:Response)=>{
 }
 const getCartItems=async(req:Request,res:Response)=>{
     const userId=req.user?.id;
+    const page =Number(req.query.page) || 1;
     try {
-        const result=await cartServices.getCartItems(userId);
+        const result=await cartServices.getCartItems(userId,page);
         res.status(201).json({
             success:true,
             message:'Cart items fetched successfully',
@@ -38,7 +39,7 @@ const getCartItems=async(req:Request,res:Response)=>{
 }
 
 const removeFromCart=async(req:Request,res:Response)=>{
-    const cartItemId=req.body;
+    const {cartItemId}=req.params;
     try {
         const result=await cartServices.removeFromCart(cartItemId);
         res.status(201).json({

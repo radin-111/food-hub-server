@@ -107,12 +107,14 @@ const updateCategories = async (id: string, updatedData: any) => {
 };
 
 const getMyMeals = async (providerId: string, page: number) => {
+  
   const totalMeals = await prisma.meals.count({
     where: {
       providerId,
     },
   });
   const totalPages = Math.ceil(totalMeals / 15);
+  
   const result = await prisma.meals.findMany({
     take: 15,
     skip: (page - 1) * 15,
@@ -123,6 +125,7 @@ const getMyMeals = async (providerId: string, page: number) => {
       category: true,
     },
   });
+  console.log(result);
   return {
     result,
     totalPages,

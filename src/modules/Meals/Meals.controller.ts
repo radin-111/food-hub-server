@@ -137,6 +137,7 @@ const updateCategories = async (req: Request, res: Response) => {
 const getMyMeals = async (req: Request, res: Response) => {
   const providerId = req.user?.providerId as string;
   const page = Number(req.query.page) || 1;
+  
   try {
     const result = await MealsServices.getMyMeals(providerId,page);
     res.status(201).json({

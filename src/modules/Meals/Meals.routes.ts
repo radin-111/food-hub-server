@@ -2,6 +2,7 @@ import { Router } from "express";
 import { MealsController } from "./Meals.controller";
 import auth, { UserRoles } from "../../middlewares/auth";
 
+
 const router = Router();
 router.get("/", MealsController.getAllMeals);
 router.get("/:id", MealsController.getMealsById);

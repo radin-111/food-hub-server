@@ -25,11 +25,10 @@ declare global {
 const auth = (...roles: any[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // get user session
       const session = await betterAuth.api.getSession({
         headers: req.headers as any,
       });
-
+ 
       if (!session) {
         return res.status(401).json({
           success: false,
@@ -67,6 +66,7 @@ const auth = (...roles: any[]) => {
         });
         req.user.providerId = provider?.id;
       }
+
       next();
     } catch (err: any) {
       return res.status(401).json({
