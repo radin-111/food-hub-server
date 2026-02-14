@@ -64,6 +64,13 @@ var Role = {
   PROVIDER: "PROVIDER",
   ADMIN: "ADMIN"
 };
+var OrderStatus = {
+  PLACED: "PLACED",
+  PREPARING: "PREPARING",
+  READY: "READY",
+  CANCELLED: "CANCELLED",
+  DELIVERED: "DELIVERED"
+};
 var ProviderStatus = {
   ACTIVE: "ACTIVE",
   INACTIVE: "INACTIVE",
@@ -919,6 +926,7 @@ var getMyMeals = async (providerId, page) => {
     }
   });
   const totalPages = Math.ceil(totalMeals / 15);
+  console.log(providerId);
   const result = await prisma.meals.findMany({
     take: 15,
     skip: (page - 1) * 15,
@@ -929,7 +937,6 @@ var getMyMeals = async (providerId, page) => {
       category: true
     }
   });
-  console.log(result);
   return {
     result,
     totalPages
@@ -1088,11 +1095,10 @@ var updateCategories2 = async (req, res) => {
     });
   }
 };
-var getMyMeals2 = async (req, res) => {
-  const providerId = req.user?.providerId;
-  const page = Number(req.query.page) || 1;
+var getMealsById2 = async (req, res) => {
+  const { id } = req.params;
   try {
-    const result = await MealsServices.getMyMeals(providerId, page);
+    const result = await MealsServices.getMealsById(id);
     res.status(201).json({
       success: true,
       message: "Meals fetched successfully",
@@ -1106,10 +1112,11 @@ var getMyMeals2 = async (req, res) => {
     });
   }
 };
-var getMealsById2 = async (req, res) => {
-  const { id } = req.params;
+var getMyMeals2 = async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const providerId = req.user?.providerId;
   try {
-    const result = await MealsServices.getMealsById(id);
+    const result = await MealsServices.getMyMeals(providerId, page);
     res.status(201).json({
       success: true,
       message: "Meals fetched successfully",
@@ -1137,15 +1144,23 @@ var MealsController = {
 
 // src/modules/Meals/Meals.routes.ts
 var router3 = Router3();
+router3.get("/myMeals", auth_default("PROVIDER" /* PROVIDER */), MealsController.getMyMeals);
+router3.get("/categories", MealsController.getAllCategories);
 router3.get("/", MealsController.getAllMeals);
 router3.get("/:id", MealsController.getMealsById);
-router3.get("/myMeals", auth_default("PROVIDER" /* PROVIDER */), MealsController.getMyMeals);
 router3.post("/", auth_default("PROVIDER" /* PROVIDER */), MealsController.createMeals);
 router3.patch("/:id", auth_default("PROVIDER" /* PROVIDER */), MealsController.updateMeals);
 router3.delete("/:id", auth_default("PROVIDER" /* PROVIDER */), MealsController.deleteMeals);
-router3.get("/categories", MealsController.getAllCategories);
-router3.post("/categories", auth_default("ADMIN" /* ADMIN */), MealsController.createCategories);
-router3.patch("/categories/:id", auth_default("ADMIN" /* ADMIN */), MealsController.updateCategories);
+router3.post(
+  "/categories",
+  auth_default("ADMIN" /* ADMIN */),
+  MealsController.createCategories
+);
+router3.patch(
+  "/categories/:id",
+  auth_default("ADMIN" /* ADMIN */),
+  MealsController.updateCategories
+);
 var MealsRoutes = router3;
 
 // src/modules/Cart/Cart.routes.ts
@@ -1396,7 +1411,18 @@ var getProviderOrders = async (providerId, page) => {
     totalPages
   };
 };
-var updateOrderStatus = async (orderId, status) => {
+var updateOrderStatus = async (orderId, status, userId) => {
+  if (userId === "CUSTOMER" /* CUSTOMER */ && status !== OrderStatus.CANCELLED) {
+    return null;
+  }
+  const order = await prisma.orders.findUnique({
+    where: {
+      id: orderId
+    }
+  });
+  if (order?.userId !== userId || order.status === OrderStatus.CANCELLED) {
+    return null;
+  }
   const result = await prisma.orders.update({
     where: {
       id: orderId
@@ -1473,7 +1499,18 @@ var updateOrderStatus2 = async (req, res) => {
   const orderId = req.params.id;
   const { status } = req.body;
   try {
-    const result = await orderServices.updateOrderStatus(orderId, status);
+    const result = await orderServices.updateOrderStatus(
+      orderId,
+      status,
+      req.user?.id
+    );
+    if (!result) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to update order status",
+        error: "Order not found"
+      });
+    }
     res.status(200).json({
       success: true,
       message: "Order status updated successfully",
@@ -1502,6 +1539,124 @@ router5.get("/provider-orders", auth_default("PROVIDER" /* PROVIDER */), orderCo
 router5.patch("/update-order-status/:id", auth_default("PROVIDER" /* PROVIDER */, "CUSTOMER" /* CUSTOMER */), orderControllers.updateOrderStatus);
 var orderRoutes = router5;
 
+// src/modules/User/User.routes.ts
+import { Router as Router6 } from "express";
+
+// src/modules/User/User.services.ts
+var getUserProfile = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId
+    },
+    include: {
+      providerProfiles: true
+    }
+  });
+  return user;
+};
+var updateUserProfile = async (userId, userData, role) => {
+  if (role === "PROVIDER" /* PROVIDER */) {
+    const user = await prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        name: userData.name,
+        image: userData.image,
+        phone: userData.phone,
+        providerProfiles: {
+          update: {
+            restaurantName: userData.providerProfiles.restaurantName,
+            address: userData.providerProfiles.address,
+            city: userData.providerProfiles.city,
+            country: userData.providerProfiles.country,
+            postalCode: userData.providerProfiles.postalCode,
+            phoneNumber: userData.providerProfiles.phoneNumber,
+            website: userData.providerProfiles.website,
+            description: userData.providerProfiles.description
+          }
+        }
+      }
+    });
+    return user;
+  } else {
+    const user = await prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        image: userData.image,
+        name: userData.name,
+        phone: userData.phone
+      }
+    });
+    return user;
+  }
+};
+var userServices2 = {
+  getUserProfile,
+  updateUserProfile
+};
+
+// src/modules/User/User.controller.ts
+var getUserProfile2 = async (req, res) => {
+  const userId = req.user?.id;
+  try {
+    const result = await userServices2.getUserProfile(userId);
+    res.status(200).json({
+      success: true,
+      message: "User profile retrieved successfully!",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var updateUserProfile2 = async (req, res) => {
+  const userId = req.user?.id;
+  const role = req.user?.role;
+  try {
+    const result = await userServices2.updateUserProfile(
+      userId,
+      req.body,
+      role
+    );
+    res.status(200).json({
+      success: true,
+      message: "User profile updated successfully!",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var userController = {
+  getUserProfile: getUserProfile2,
+  updateUserProfile: updateUserProfile2
+};
+
+// src/modules/User/User.routes.ts
+var router6 = Router6();
+router6.get(
+  "/myProfile",
+  auth_default("ADMIN" /* ADMIN */, "CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */),
+  userController.getUserProfile
+);
+router6.patch(
+  "/myProfile",
+  auth_default("ADMIN" /* ADMIN */, "CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */),
+  userController.updateUserProfile
+);
+var userRoutes = router6;
+
 // src/app.ts
 var app = express();
 app.use(
@@ -1518,6 +1673,7 @@ app.use("/users", UsersRoutes);
 app.use("/meals", MealsRoutes);
 app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
+app.use("/user", userRoutes);
 app.get("/", (req, res) => {
   res.send("We are cooking foods.");
 });

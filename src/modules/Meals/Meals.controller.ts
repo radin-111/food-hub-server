@@ -134,25 +134,7 @@ const updateCategories = async (req: Request, res: Response) => {
   }
 };
 
-const getMyMeals = async (req: Request, res: Response) => {
-  const providerId = req.user?.providerId as string;
-  const page = Number(req.query.page) || 1;
-  
-  try {
-    const result = await MealsServices.getMyMeals(providerId,page);
-    res.status(201).json({
-      success: true,
-      message: "Meals fetched successfully",
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error,
-    });
-  }
-};
+
 
 const getMealsById = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -172,7 +154,24 @@ const getMealsById = async (req: Request, res: Response) => {
   }
 };
 
-
+const getMyMeals = async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1;
+  const providerId = req.user?.providerId as string;
+  try {
+    const result = await MealsServices.getMyMeals(providerId,page);
+    res.status(201).json({
+      success: true,
+      message: "Meals fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
 
 export const MealsController = {
   createMeals,
