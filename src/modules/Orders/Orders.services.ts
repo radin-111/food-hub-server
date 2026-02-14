@@ -1,5 +1,6 @@
 import { OrderStatus } from "../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
+import { UserRoles } from "../../middlewares/auth";
 
 const createOrder = async (order: any, userId: string) => {
   const result = await prisma.orders.create({
@@ -97,7 +98,22 @@ const getProviderOrders = async (providerId: string, page: number) => {
   };
 };
 
-const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
+const updateOrderStatus = async (
+  orderId: string,
+  status: OrderStatus,
+  userId: string,
+) => {
+  if (userId === UserRoles.CUSTOMER && status !== OrderStatus.CANCELLED) {
+    return null;
+  }
+  const order = await prisma.orders.findUnique({
+    where: {
+      id: orderId,
+    },
+  });
+  if (order?.userId !== userId || order.status === OrderStatus.CANCELLED) {
+    return null;
+  }
   const result = await prisma.orders.update({
     where: {
       id: orderId,

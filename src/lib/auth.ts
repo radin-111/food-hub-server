@@ -18,7 +18,7 @@ export const auth = betterAuth({
     prisma,
 
     {
-      provider: "postgresql", 
+      provider: "postgresql",
     },
   ),
   baseURL: process.env.BETTER_AUTH_URL,
@@ -236,7 +236,6 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: isProd ? "none" : "lax",
       secure: isProd,
-      
     },
 
     crossSubDomainCookies: {

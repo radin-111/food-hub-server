@@ -929,6 +929,7 @@ var getMyMeals = async (providerId, page) => {
       category: true
     }
   });
+  console.log(result);
   return {
     result,
     totalPages
@@ -1334,6 +1335,22 @@ var getOrders = async (userId, page) => {
     skip: (page - 1) * 15,
     where: {
       userId
+    },
+    select: {
+      id: true,
+      mealId: true,
+      providerId: true,
+      quantity: true,
+      totalPrice: true,
+      status: true,
+      createdAt: true,
+      meal: {
+        select: {
+          image: true,
+          name: true,
+          price: true
+        }
+      }
     }
   });
   return {
@@ -1341,9 +1358,60 @@ var getOrders = async (userId, page) => {
     totalPages
   };
 };
+var getProviderOrders = async (providerId, page) => {
+  const totalOrders = await prisma.orders.count({
+    where: {
+      providerId
+    }
+  });
+  const totalPages = Math.ceil(totalOrders / 15);
+  const result = await prisma.orders.findMany({
+    orderBy: {
+      createdAt: "desc"
+    },
+    take: 15,
+    skip: (page - 1) * 15,
+    where: {
+      providerId
+    },
+    select: {
+      id: true,
+      mealId: true,
+      userId: true,
+      quantity: true,
+      totalPrice: true,
+      status: true,
+      createdAt: true,
+      meal: {
+        select: {
+          image: true,
+          name: true,
+          price: true
+        }
+      }
+    }
+  });
+  return {
+    result,
+    totalPages
+  };
+};
+var updateOrderStatus = async (orderId, status) => {
+  const result = await prisma.orders.update({
+    where: {
+      id: orderId
+    },
+    data: {
+      status
+    }
+  });
+  return result;
+};
 var orderServices = {
   createOrder,
-  getOrders
+  getOrders,
+  getProviderOrders,
+  updateOrderStatus
 };
 
 // src/modules/Orders/Orders.controller.ts
@@ -1383,15 +1451,55 @@ var getOrders2 = async (req, res) => {
     });
   }
 };
+var getProviderOrders2 = async (req, res) => {
+  const providerId = req.user?.providerId;
+  const page = Number(req.query.page) || 1;
+  try {
+    const result = await orderServices.getProviderOrders(providerId, page);
+    res.status(200).json({
+      success: true,
+      message: "Provider orders retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Failed to retrieve provider orders",
+      error
+    });
+  }
+};
+var updateOrderStatus2 = async (req, res) => {
+  const orderId = req.params.id;
+  const { status } = req.body;
+  try {
+    const result = await orderServices.updateOrderStatus(orderId, status);
+    res.status(200).json({
+      success: true,
+      message: "Order status updated successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Failed to update order status",
+      error
+    });
+  }
+};
 var orderControllers = {
   createOrder: createOrder2,
-  getOrders: getOrders2
+  getOrders: getOrders2,
+  getProviderOrders: getProviderOrders2,
+  updateOrderStatus: updateOrderStatus2
 };
 
 // src/modules/Orders/Orders.routes.ts
 var router5 = Router5();
 router5.post("/create-order", auth_default("CUSTOMER" /* CUSTOMER */), orderControllers.createOrder);
 router5.get("/get-orders", auth_default("CUSTOMER" /* CUSTOMER */), orderControllers.getOrders);
+router5.get("/provider-orders", auth_default("PROVIDER" /* PROVIDER */), orderControllers.getProviderOrders);
+router5.patch("/update-order-status/:id", auth_default("PROVIDER" /* PROVIDER */, "CUSTOMER" /* CUSTOMER */), orderControllers.updateOrderStatus);
 var orderRoutes = router5;
 
 // src/app.ts

@@ -13,6 +13,7 @@ import { MealsRoutes } from "./modules/Meals/Meals.routes";
 import { cartRoutes } from "./modules/Cart/Cart.routes";
 import cookieParser from "cookie-parser"; 
 import { orderRoutes } from "./modules/Orders/Orders.routes";
+import { userRoutes } from "./modules/User/User.routes";
 const app: Application = express();
 
 app.use(
@@ -31,7 +32,7 @@ app.use("/users", UsersRoutes);
 app.use("/meals", MealsRoutes);
 app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
-
+app.use("/user", userRoutes);
 app.get("/", (req: Request, res: Response) => {
   res.send("We are cooking foods.");
 });
