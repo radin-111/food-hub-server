@@ -41,8 +41,63 @@ const updateUserProfile = async (req: Request, res: Response) => {
   }
 };
 
+const getCustomerStatistics = async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  try {
+    const result = await userServices.getCustomerStatistics(userId as string);
+    res.status(200).json({
+      success: true,
+      message: "Customer statistics retrieved successfully!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
+const getProviderStatistics = async (req: Request, res: Response) => {
+  const providerId = req.user?.providerId;
+  try {
+    const result = await userServices.getProviderStatistics(
+      providerId as string,
+    );
+    res.status(200).json({
+      success: true,
+      message: "Provider statistics retrieved successfully!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
+const getAdminStatistics = async (req: Request, res: Response) => {
+  try {
+    const result = await userServices.getAdminStatistics();
+    res.status(200).json({
+      success: true,
+      message: "Admin statistics retrieved successfully!",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
 
 export const userController = {
   getUserProfile,
   updateUserProfile,
+  getCustomerStatistics,
+  getProviderStatistics,
+  getAdminStatistics,
 };

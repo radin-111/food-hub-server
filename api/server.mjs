@@ -926,7 +926,6 @@ var getMyMeals = async (providerId, page) => {
     }
   });
   const totalPages = Math.ceil(totalMeals / 15);
-  console.log(providerId);
   const result = await prisma.meals.findMany({
     take: 15,
     skip: (page - 1) * 15,
@@ -1593,9 +1592,167 @@ var updateUserProfile = async (userId, userData, role) => {
     return user;
   }
 };
+var getCustomerStatistics = async (userId) => {
+  const [
+    revenue,
+    totalOrders,
+    completedOrders,
+    cancelledOrders,
+    totalReviews,
+    recentOrders
+  ] = await prisma.$transaction([
+    prisma.orders.aggregate({
+      where: { userId },
+      _sum: { totalPrice: true }
+    }),
+    prisma.orders.count({
+      where: { userId }
+    }),
+    prisma.orders.count({
+      where: { userId, status: OrderStatus.DELIVERED }
+    }),
+    prisma.orders.count({
+      where: { userId, status: OrderStatus.CANCELLED }
+    }),
+    prisma.reviews.count({
+      where: { userId }
+    }),
+    prisma.orders.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      include: {
+        meal: true,
+        provider: true
+      }
+    })
+  ]);
+  return {
+    totalRevenue: revenue._sum.totalPrice ?? 0,
+    totalOrders,
+    completedOrders,
+    cancelledOrders,
+    totalReviews,
+    recentOrders
+  };
+};
+var getProviderStatistics = async (providerId) => {
+  const [
+    revenue,
+    totalOrders,
+    completedOrders,
+    cancelledOrders,
+    totalMeals,
+    totalReviews,
+    averageRating,
+    recentOrders
+  ] = await prisma.$transaction([
+    prisma.orders.aggregate({
+      where: { providerId },
+      _sum: { totalPrice: true }
+    }),
+    prisma.orders.count({
+      where: { providerId }
+    }),
+    prisma.orders.count({
+      where: { providerId, status: OrderStatus.DELIVERED }
+    }),
+    prisma.orders.count({
+      where: { providerId, status: OrderStatus.CANCELLED }
+    }),
+    prisma.meals.count({
+      where: { providerId }
+    }),
+    prisma.reviews.count({
+      where: { providerProfilesId: providerId }
+    }),
+    prisma.reviews.aggregate({
+      where: { providerProfilesId: providerId },
+      _avg: { rating: true }
+    }),
+    prisma.orders.findMany({
+      where: { providerId },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      include: {
+        meal: true,
+        user: true
+      }
+    })
+  ]);
+  return {
+    totalRevenue: revenue._sum.totalPrice ?? 0,
+    totalOrders,
+    completedOrders,
+    cancelledOrders,
+    totalMeals,
+    totalReviews,
+    averageRating: averageRating._avg.rating ?? 0,
+    recentOrders
+  };
+};
+var getAdminStatistics = async () => {
+  const [
+    revenue,
+    totalOrders,
+    deliveredOrders,
+    cancelledOrders,
+    totalUsers,
+    totalProviders,
+    totalMeals,
+    totalReviews,
+    monthlyRevenue,
+    recentOrders
+  ] = await prisma.$transaction([
+    prisma.orders.aggregate({
+      _sum: { totalPrice: true }
+    }),
+    prisma.orders.count(),
+    prisma.orders.count({
+      where: { status: OrderStatus.DELIVERED }
+    }),
+    prisma.orders.count({
+      where: { status: OrderStatus.CANCELLED }
+    }),
+    prisma.user.count(),
+    prisma.providerProfiles.count(),
+    prisma.meals.count(),
+    prisma.reviews.count(),
+    prisma.orders.groupBy({
+      by: ["createdAt"],
+      _sum: { totalPrice: true },
+      orderBy: { createdAt: "desc" },
+      take: 30
+    }),
+    prisma.orders.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: {
+        meal: true,
+        user: true,
+        provider: true
+      }
+    })
+  ]);
+  return {
+    totalRevenue: revenue._sum.totalPrice ?? 0,
+    totalOrders,
+    deliveredOrders,
+    cancelledOrders,
+    totalUsers,
+    totalProviders,
+    totalMeals,
+    totalReviews,
+    monthlyRevenue,
+    recentOrders
+  };
+};
 var userServices2 = {
   getUserProfile,
-  updateUserProfile
+  updateUserProfile,
+  getCustomerStatistics,
+  getProviderStatistics,
+  getAdminStatistics
 };
 
 // src/modules/User/User.controller.ts
@@ -1638,9 +1795,64 @@ var updateUserProfile2 = async (req, res) => {
     });
   }
 };
+var getCustomerStatistics2 = async (req, res) => {
+  const userId = req.user?.id;
+  try {
+    const result = await userServices2.getCustomerStatistics(userId);
+    res.status(200).json({
+      success: true,
+      message: "Customer statistics retrieved successfully!",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var getProviderStatistics2 = async (req, res) => {
+  const providerId = req.user?.providerId;
+  try {
+    const result = await userServices2.getProviderStatistics(
+      providerId
+    );
+    res.status(200).json({
+      success: true,
+      message: "Provider statistics retrieved successfully!",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
+var getAdminStatistics2 = async (req, res) => {
+  try {
+    const result = await userServices2.getAdminStatistics();
+    res.status(200).json({
+      success: true,
+      message: "Admin statistics retrieved successfully!",
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error
+    });
+  }
+};
 var userController = {
   getUserProfile: getUserProfile2,
-  updateUserProfile: updateUserProfile2
+  updateUserProfile: updateUserProfile2,
+  getCustomerStatistics: getCustomerStatistics2,
+  getProviderStatistics: getProviderStatistics2,
+  getAdminStatistics: getAdminStatistics2
 };
 
 // src/modules/User/User.routes.ts
@@ -1649,6 +1861,21 @@ router6.get(
   "/myProfile",
   auth_default("ADMIN" /* ADMIN */, "CUSTOMER" /* CUSTOMER */, "PROVIDER" /* PROVIDER */),
   userController.getUserProfile
+);
+router6.get(
+  "/customer-statistics",
+  auth_default("CUSTOMER" /* CUSTOMER */),
+  userController.getCustomerStatistics
+);
+router6.get(
+  "/provider-statistics",
+  auth_default("PROVIDER" /* PROVIDER */),
+  userController.getProviderStatistics
+);
+router6.get(
+  "/admin-statistics",
+  auth_default("ADMIN" /* ADMIN */),
+  userController.getAdminStatistics
 );
 router6.patch(
   "/myProfile",

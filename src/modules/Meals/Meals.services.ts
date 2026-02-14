@@ -114,7 +114,7 @@ const getMyMeals = async (providerId: string, page: number) => {
     },
   });
   const totalPages = Math.ceil(totalMeals / 15);
-  console.log(providerId);
+  
   const result = await prisma.meals.findMany({
     take: 15,
     skip: (page - 1) * 15,
