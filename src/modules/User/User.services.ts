@@ -100,7 +100,7 @@ export const getCustomerStatistics = async (userId: string) => {
   ]);
 
   return {
-    totalRevenue: revenue._sum.totalPrice ?? 0,
+    totalSpent: revenue._sum.totalPrice ?? 0,
     totalOrders,
     completedOrders,
     cancelledOrders,
