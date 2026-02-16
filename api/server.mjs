@@ -1410,8 +1410,11 @@ var getProviderOrders = async (providerId, page) => {
     totalPages
   };
 };
-var updateOrderStatus = async (orderId, status, userId) => {
-  if (userId === "CUSTOMER" /* CUSTOMER */ && status !== OrderStatus.CANCELLED) {
+var updateOrderStatus = async (orderId, status, role, userId) => {
+  if (role === "CUSTOMER" /* CUSTOMER */ && status !== OrderStatus.CANCELLED) {
+    return null;
+  }
+  if (role === "PROVIDER" /* PROVIDER */ && status === OrderStatus.CANCELLED) {
     return null;
   }
   const order = await prisma.orders.findUnique({
@@ -1419,7 +1422,7 @@ var updateOrderStatus = async (orderId, status, userId) => {
       id: orderId
     }
   });
-  if (order?.userId !== userId || order.status === OrderStatus.CANCELLED) {
+  if (order?.userId !== userId && role !== "PROVIDER" /* PROVIDER */) {
     return null;
   }
   const result = await prisma.orders.update({
@@ -1432,9 +1435,42 @@ var updateOrderStatus = async (orderId, status, userId) => {
   });
   return result;
 };
+var getAllOrders = async (page) => {
+  const totalOrders = await prisma.orders.count();
+  const totalPages = Math.ceil(totalOrders / 15);
+  const result = await prisma.orders.findMany({
+    orderBy: {
+      createdAt: "desc"
+    },
+    take: 15,
+    skip: (page - 1) * 15,
+    select: {
+      id: true,
+      mealId: true,
+      userId: true,
+      providerId: true,
+      quantity: true,
+      totalPrice: true,
+      status: true,
+      createdAt: true,
+      meal: {
+        select: {
+          image: true,
+          name: true,
+          price: true
+        }
+      }
+    }
+  });
+  return {
+    result,
+    totalPages
+  };
+};
 var orderServices = {
   createOrder,
   getOrders,
+  getAllOrders,
   getProviderOrders,
   updateOrderStatus
 };
@@ -1501,6 +1537,7 @@ var updateOrderStatus2 = async (req, res) => {
     const result = await orderServices.updateOrderStatus(
       orderId,
       status,
+      req.user?.role,
       req.user?.id
     );
     if (!result) {
@@ -1523,19 +1560,54 @@ var updateOrderStatus2 = async (req, res) => {
     });
   }
 };
+var getAllOrders2 = async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  try {
+    const result = await orderServices.getAllOrders(page);
+    res.status(200).json({
+      success: true,
+      message: "All orders retrieved successfully",
+      data: result
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Failed to retrieve all orders",
+      error
+    });
+  }
+};
 var orderControllers = {
   createOrder: createOrder2,
   getOrders: getOrders2,
   getProviderOrders: getProviderOrders2,
-  updateOrderStatus: updateOrderStatus2
+  updateOrderStatus: updateOrderStatus2,
+  getAllOrders: getAllOrders2
 };
 
 // src/modules/Orders/Orders.routes.ts
 var router5 = Router5();
-router5.post("/create-order", auth_default("CUSTOMER" /* CUSTOMER */), orderControllers.createOrder);
+router5.post(
+  "/create-order",
+  auth_default("CUSTOMER" /* CUSTOMER */),
+  orderControllers.createOrder
+);
+router5.patch(
+  "/update-order-status/:id",
+  auth_default("PROVIDER" /* PROVIDER */, "CUSTOMER" /* CUSTOMER */),
+  orderControllers.updateOrderStatus
+);
 router5.get("/get-orders", auth_default("CUSTOMER" /* CUSTOMER */), orderControllers.getOrders);
-router5.get("/provider-orders", auth_default("PROVIDER" /* PROVIDER */), orderControllers.getProviderOrders);
-router5.patch("/update-order-status/:id", auth_default("PROVIDER" /* PROVIDER */, "CUSTOMER" /* CUSTOMER */), orderControllers.updateOrderStatus);
+router5.get(
+  "/get-all-orders",
+  auth_default("ADMIN" /* ADMIN */),
+  orderControllers.getAllOrders
+);
+router5.get(
+  "/provider-orders",
+  auth_default("PROVIDER" /* PROVIDER */),
+  orderControllers.getProviderOrders
+);
 var orderRoutes = router5;
 
 // src/modules/User/User.routes.ts
@@ -1628,7 +1700,7 @@ var getCustomerStatistics = async (userId) => {
     })
   ]);
   return {
-    totalRevenue: revenue._sum.totalPrice ?? 0,
+    totalSpent: revenue._sum.totalPrice ?? 0,
     totalOrders,
     completedOrders,
     cancelledOrders,

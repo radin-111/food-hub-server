@@ -45,6 +45,12 @@ const getOrders = async (userId: string, page: number) => {
       totalPrice: true,
       status: true,
       createdAt: true,
+      reviews: {
+        select: {
+          rating: true,
+          comment: true,
+        },
+      },
       meal: {
         select: {
           image: true,
@@ -83,6 +89,12 @@ const getProviderOrders = async (providerId: string, page: number) => {
       totalPrice: true,
       status: true,
       createdAt: true,
+      reviews: {
+        select: {
+          rating: true,
+          comment: true,
+        },
+      },
       meal: {
         select: {
           image: true,

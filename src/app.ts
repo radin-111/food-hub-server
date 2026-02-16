@@ -11,9 +11,10 @@ import { ProviderProfilesRoutes } from "./modules/ProviderProfiles/ProviderProfi
 import { UsersRoutes } from "./modules/Users/Users.routes";
 import { MealsRoutes } from "./modules/Meals/Meals.routes";
 import { cartRoutes } from "./modules/Cart/Cart.routes";
-import cookieParser from "cookie-parser"; 
+import cookieParser from "cookie-parser";
 import { orderRoutes } from "./modules/Orders/Orders.routes";
 import { userRoutes } from "./modules/User/User.routes";
+import { reviewRoutes } from "./modules/Reviews/Reviews.routes";
 const app: Application = express();
 
 app.use(
@@ -33,6 +34,8 @@ app.use("/meals", MealsRoutes);
 app.use("/cart", cartRoutes);
 app.use("/orders", orderRoutes);
 app.use("/user", userRoutes);
+app.use("/reviews", reviewRoutes);
+
 app.get("/", (req: Request, res: Response) => {
   res.send("We are cooking foods.");
 });
