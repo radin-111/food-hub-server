@@ -236,10 +236,17 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: isProd ? "none" : "lax",
       secure: isProd,
+      domain: isProd ? ".vercel.app" : "localhost",
     },
 
     crossSubDomainCookies: {
       enabled: isProd,
     },
+  },
+  cookie: {
+    httpOnly: true,
+    secure: isProd,
+    sameSite:   "lax",
+    crossDomain: true,
   },
 });
