@@ -60,10 +60,12 @@ const getProviderOrders = async (req: Request, res: Response) => {
 const updateOrderStatus = async (req: Request, res: Response) => {
   const orderId = req.params.id;
   const { status } = req.body;
+  
   try {
     const result = await orderServices.updateOrderStatus(
       orderId as string,
       status as OrderStatus,
+      req.user?.role as string,
       req.user?.id as string,
     );
     if (!result) {
@@ -86,9 +88,27 @@ const updateOrderStatus = async (req: Request, res: Response) => {
     });
   }
 };
+const getAllOrders = async (req: Request, res: Response) => {
+  const page = Number(req.query.page) || 1;
+  try {
+    const result = await orderServices.getAllOrders(page);
+    res.status(200).json({
+      success: true,
+      message: "All orders retrieved successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Failed to retrieve all orders",
+      error: error,
+    });
+  }
+};
 export const orderControllers = {
   createOrder,
   getOrders,
   getProviderOrders,
   updateOrderStatus,
+  getAllOrders,
 };

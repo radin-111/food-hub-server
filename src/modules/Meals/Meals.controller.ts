@@ -26,6 +26,7 @@ const createMeals = async (req: Request, res: Response) => {
 const updateMeals = async (req: Request, res: Response) => {
   const { id } = req.params;
   const meal = req.body;
+ 
   try {
     const result = await MealsServices.updateMeals(id as string, meal);
     res.status(201).json({

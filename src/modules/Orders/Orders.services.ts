@@ -101,9 +101,13 @@ const getProviderOrders = async (providerId: string, page: number) => {
 const updateOrderStatus = async (
   orderId: string,
   status: OrderStatus,
+  role: string,
   userId: string,
 ) => {
-  if (userId === UserRoles.CUSTOMER && status !== OrderStatus.CANCELLED) {
+  if (role === UserRoles.CUSTOMER && status !== OrderStatus.CANCELLED) {
+    return null;
+  }
+  if (role === UserRoles.PROVIDER && status === OrderStatus.CANCELLED) {
     return null;
   }
   const order = await prisma.orders.findUnique({
@@ -111,9 +115,10 @@ const updateOrderStatus = async (
       id: orderId,
     },
   });
-  if (order?.userId !== userId || order.status === OrderStatus.CANCELLED) {
+  if (order?.userId !== userId && role !== UserRoles.PROVIDER) {
     return null;
   }
+
   const result = await prisma.orders.update({
     where: {
       id: orderId,
@@ -122,12 +127,45 @@ const updateOrderStatus = async (
       status,
     },
   });
+
   return result;
 };
-
+const getAllOrders = async (page: number) => {
+  const totalOrders = await prisma.orders.count();
+  const totalPages = Math.ceil(totalOrders / 15);
+  const result = await prisma.orders.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 15,
+    skip: (page - 1) * 15,
+    select: {
+      id: true,
+      mealId: true,
+      userId: true,
+      providerId: true,
+      quantity: true,
+      totalPrice: true,
+      status: true,
+      createdAt: true,
+      meal: {
+        select: {
+          image: true,
+          name: true,
+          price: true,
+        },
+      },
+    },
+  });
+  return {
+    result,
+    totalPages,
+  };
+};
 export const orderServices = {
   createOrder,
   getOrders,
+  getAllOrders,
   getProviderOrders,
   updateOrderStatus,
 };
