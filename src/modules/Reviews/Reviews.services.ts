@@ -12,7 +12,28 @@ const submitReview = async (payload: any) => {
   });
   return review;
 };
+const getRecentReviews = async () => {
+  const reviews = await prisma.reviews.findMany({
+    take: 9,
+    orderBy: {
+      createdAt: "desc",
+    },
+    select:{
+      id:true,
+      rating:true,
+      comment:true,
+      createdAt:true,
+      user:{
+        select:{
+          name:true
+        }
+      }
+    }
+  });
+  return reviews;
+};
 
 export const reviewServices = {
   submitReview,
+  getRecentReviews,
 };

@@ -174,6 +174,23 @@ const getMyMeals = async (req: Request, res: Response) => {
   }
 };
 
+const getSomeMeals = async (req: Request, res: Response) => {
+  try {
+    const result = await MealsServices.getSomeMeals();
+    res.status(201).json({
+      success: true,
+      message: "Meals fetched successfully",
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error,
+    });
+  }
+};
+
 export const MealsController = {
   createMeals,
   createCategories,
@@ -182,6 +199,7 @@ export const MealsController = {
   updateMeals,
   deleteMeals,
   getMyMeals,
+  getSomeMeals,
   updateCategories,
   getAllMeals,
 };

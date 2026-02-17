@@ -234,19 +234,22 @@ export const auth = betterAuth({
   advanced: {
     useSecureCookies: isProd,
     defaultCookieAttributes: {
-      sameSite: isProd ? "none" : "lax",
-      secure: isProd,
-      domain: isProd ? ".vercel.app" : "localhost",
+      sameSite: "none",
+      secure: true,
     },
 
     crossSubDomainCookies: {
       enabled: isProd,
     },
-  },
-  cookie: {
-    httpOnly: true,
-    secure: isProd,
-    sameSite:   "lax",
-    crossDomain: true,
+    
+    cookies: {
+      sessionToken: {
+        name: "sessionToken",
+        attributes: {
+          sameSite: "none",
+          secure: true,
+        },
+      },
+    },
   },
 });

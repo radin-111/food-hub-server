@@ -26,9 +26,27 @@ const submitReview = async (req: Request, res: Response) => {
     });
   }
 };
+const getRecentReviews = async (req: Request, res: Response) => {
+  try {
+   
+    const reviews = await reviewServices.getRecentReviews();
+    res.status(200).json({
+      success: true,
+      message: "Received reviews retrieved successfully",
+      data: reviews,
+    });
+  } catch (error:any) {
+    res.status(400).json({
+      success: false,
+      message: "Failed to retrieve received reviews",
+      error: error.message,
+    });
+  }
+};
 
 
 
 export const reviewControllers={
   submitReview,
+  getRecentReviews,
 }

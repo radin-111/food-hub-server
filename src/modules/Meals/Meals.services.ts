@@ -150,12 +150,23 @@ const getMealsById = async (id: string) => {
   return result;
 };
 
+const getSomeMeals = async () => {
+  const result = await prisma.meals.findMany({
+    take: 6,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return result;
+};
+
 export const MealsServices = {
   createMeals,
   createCategories,
   updateMeals,
   getMealsById,
   updateCategories,
+  getSomeMeals,
   deleteMeals,
   getAllMeals,
   getMyMeals,

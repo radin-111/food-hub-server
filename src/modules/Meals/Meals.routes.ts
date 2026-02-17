@@ -3,6 +3,7 @@ import { MealsController } from "./Meals.controller";
 import auth, { UserRoles } from "../../middlewares/auth";
 
 const router = Router();
+router.get("/some-meals", MealsController.getSomeMeals);
 router.get("/myMeals", auth(UserRoles.PROVIDER), MealsController.getMyMeals);
 router.get("/categories", MealsController.getAllCategories);
 router.get("/", MealsController.getAllMeals);
