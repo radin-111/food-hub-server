@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import nodemailer from "nodemailer";
 import { prisma } from "./prisma";
-const isProd = process.env.NODE_ENV === "production";
+
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
@@ -23,6 +23,7 @@ export const auth = betterAuth({
   ),
   baseURL: process.env.BETTER_AUTH_URL,
   trustedOrigins: [process.env.APP_URL!],
+  secret: process.env.BETTER_AUTH_SECRET!,
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
@@ -231,23 +232,41 @@ export const auth = betterAuth({
     },
   },
 
+  session: {
+    expiresIn: 60 * 60 * 24 * 30,
+    updateAge: 60 * 60 * 24 * 30,
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60 * 24 * 30,
+    },
+  },
+
   advanced: {
-    useSecureCookies: isProd,
+    useSecureCookies: true,
+
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true,
+      httpOnly: true,
+      path: "/",
     },
 
-    crossSubDomainCookies: {
-      enabled: isProd,
-    },
-    
     cookies: {
-      sessionToken: {
-        name: "sessionToken",
+      state: {
         attributes: {
           sameSite: "none",
           secure: true,
+          httpOnly: true,
+          path: "/",
+        },
+      },
+      sessionToken: {
+        
+        attributes: {
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+          path: "/",
         },
       },
     },
