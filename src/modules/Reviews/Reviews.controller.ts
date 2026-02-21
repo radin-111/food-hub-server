@@ -5,13 +5,14 @@ const submitReview = async (req: Request, res: Response) => {
   try {
     
     const userId = req.user?.id;
-    const { orderId ,mealId,rating,comment } = req.body;
+    const { orderId ,mealId,rating,comment ,providerId } = req.body;
     const review = await reviewServices.submitReview({
       userId,
       orderId,
       mealId,
       rating,
       comment,
+      providerId,
     });
     res.status(201).json({
       success: true,

@@ -11,7 +11,6 @@ import { ProviderProfilesRoutes } from "./modules/ProviderProfiles/ProviderProfi
 import { UsersRoutes } from "./modules/Users/Users.routes";
 import { MealsRoutes } from "./modules/Meals/Meals.routes";
 import { cartRoutes } from "./modules/Cart/Cart.routes";
-import cookieParser from "cookie-parser";
 import { orderRoutes } from "./modules/Orders/Orders.routes";
 import { userRoutes } from "./modules/User/User.routes";
 import { reviewRoutes } from "./modules/Reviews/Reviews.routes";
@@ -19,12 +18,11 @@ const app: Application = express();
 
 app.use(
   cors({
-    origin: process.env.APP_URL!,
+    origin: process.env.APP_URL,
     credentials: true,
   }),
 );
 app.use(express.json());
-app.use(cookieParser());
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 

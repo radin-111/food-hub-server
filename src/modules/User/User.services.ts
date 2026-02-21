@@ -142,11 +142,11 @@ const getProviderStatistics = async (providerId: string) => {
     }),
 
     prisma.reviews.count({
-      where: { providerProfilesId: providerId },
+      where: { providerId: providerId },
     }),
 
     prisma.reviews.aggregate({
-      where: { providerProfilesId: providerId },
+      where: { providerId: providerId },
       _avg: { rating: true },
     }),
 

@@ -8,6 +8,7 @@ const submitReview = async (payload: any) => {
       mealId: payload.mealId,
       rating: payload.rating,
       comment: payload.comment,
+      providerId: payload.providerId,
     },
   });
   return review;
@@ -18,17 +19,17 @@ const getRecentReviews = async () => {
     orderBy: {
       createdAt: "desc",
     },
-    select:{
-      id:true,
-      rating:true,
-      comment:true,
-      createdAt:true,
-      user:{
-        select:{
-          name:true
-        }
-      }
-    }
+    select: {
+      id: true,
+      rating: true,
+      comment: true,
+      createdAt: true,
+      user: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
   return reviews;
 };

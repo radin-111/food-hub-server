@@ -1277,7 +1277,7 @@ export const ReviewsScalarFieldEnum = {
   comment: 'comment',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  providerProfilesId: 'providerProfilesId'
+  providerId: 'providerId'
 } as const
 
 export type ReviewsScalarFieldEnum = (typeof ReviewsScalarFieldEnum)[keyof typeof ReviewsScalarFieldEnum]

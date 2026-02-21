@@ -401,7 +401,7 @@ export type ProviderProfilesCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutProviderProfilesInput
   meals?: Prisma.MealsCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderInput
   carts?: Prisma.CartCreateNestedManyWithoutProviderInput
 }
 
@@ -422,7 +422,7 @@ export type ProviderProfilesUncheckedCreateInput = {
   updatedAt?: Date | string
   meals?: Prisma.MealsUncheckedCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersUncheckedCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderInput
   carts?: Prisma.CartUncheckedCreateNestedManyWithoutProviderInput
 }
 
@@ -443,7 +443,7 @@ export type ProviderProfilesUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfilesNestedInput
   meals?: Prisma.MealsUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUpdateManyWithoutProviderNestedInput
   carts?: Prisma.CartUpdateManyWithoutProviderNestedInput
 }
 
@@ -464,7 +464,7 @@ export type ProviderProfilesUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealsUncheckedUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUncheckedUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderNestedInput
   carts?: Prisma.CartUncheckedUpdateManyWithoutProviderNestedInput
 }
 
@@ -679,12 +679,10 @@ export type ProviderProfilesCreateNestedOneWithoutReviewsInput = {
   connect?: Prisma.ProviderProfilesWhereUniqueInput
 }
 
-export type ProviderProfilesUpdateOneWithoutReviewsNestedInput = {
+export type ProviderProfilesUpdateOneRequiredWithoutReviewsNestedInput = {
   create?: Prisma.XOR<Prisma.ProviderProfilesCreateWithoutReviewsInput, Prisma.ProviderProfilesUncheckedCreateWithoutReviewsInput>
   connectOrCreate?: Prisma.ProviderProfilesCreateOrConnectWithoutReviewsInput
   upsert?: Prisma.ProviderProfilesUpsertWithoutReviewsInput
-  disconnect?: Prisma.ProviderProfilesWhereInput | boolean
-  delete?: Prisma.ProviderProfilesWhereInput | boolean
   connect?: Prisma.ProviderProfilesWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProviderProfilesUpdateToOneWithWhereWithoutReviewsInput, Prisma.ProviderProfilesUpdateWithoutReviewsInput>, Prisma.ProviderProfilesUncheckedUpdateWithoutReviewsInput>
 }
@@ -705,7 +703,7 @@ export type ProviderProfilesCreateWithoutUserInput = {
   updatedAt?: Date | string
   meals?: Prisma.MealsCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderInput
   carts?: Prisma.CartCreateNestedManyWithoutProviderInput
 }
 
@@ -725,7 +723,7 @@ export type ProviderProfilesUncheckedCreateWithoutUserInput = {
   updatedAt?: Date | string
   meals?: Prisma.MealsUncheckedCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersUncheckedCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderInput
   carts?: Prisma.CartUncheckedCreateNestedManyWithoutProviderInput
 }
 
@@ -761,7 +759,7 @@ export type ProviderProfilesUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealsUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUpdateManyWithoutProviderNestedInput
   carts?: Prisma.CartUpdateManyWithoutProviderNestedInput
 }
 
@@ -781,7 +779,7 @@ export type ProviderProfilesUncheckedUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealsUncheckedUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUncheckedUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderNestedInput
   carts?: Prisma.CartUncheckedUpdateManyWithoutProviderNestedInput
 }
 
@@ -801,7 +799,7 @@ export type ProviderProfilesCreateWithoutMealsInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProviderProfilesInput
   orders?: Prisma.OrdersCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderInput
   carts?: Prisma.CartCreateNestedManyWithoutProviderInput
 }
 
@@ -821,7 +819,7 @@ export type ProviderProfilesUncheckedCreateWithoutMealsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   orders?: Prisma.OrdersUncheckedCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderInput
   carts?: Prisma.CartUncheckedCreateNestedManyWithoutProviderInput
 }
 
@@ -857,7 +855,7 @@ export type ProviderProfilesUpdateWithoutMealsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfilesNestedInput
   orders?: Prisma.OrdersUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUpdateManyWithoutProviderNestedInput
   carts?: Prisma.CartUpdateManyWithoutProviderNestedInput
 }
 
@@ -877,7 +875,7 @@ export type ProviderProfilesUncheckedUpdateWithoutMealsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orders?: Prisma.OrdersUncheckedUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderNestedInput
   carts?: Prisma.CartUncheckedUpdateManyWithoutProviderNestedInput
 }
 
@@ -898,7 +896,7 @@ export type ProviderProfilesCreateWithoutCartsInput = {
   user: Prisma.UserCreateNestedOneWithoutProviderProfilesInput
   meals?: Prisma.MealsCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfilesUncheckedCreateWithoutCartsInput = {
@@ -918,7 +916,7 @@ export type ProviderProfilesUncheckedCreateWithoutCartsInput = {
   updatedAt?: Date | string
   meals?: Prisma.MealsUncheckedCreateNestedManyWithoutProviderInput
   orders?: Prisma.OrdersUncheckedCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderInput
 }
 
 export type ProviderProfilesCreateOrConnectWithoutCartsInput = {
@@ -954,7 +952,7 @@ export type ProviderProfilesUpdateWithoutCartsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfilesNestedInput
   meals?: Prisma.MealsUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfilesUncheckedUpdateWithoutCartsInput = {
@@ -974,7 +972,7 @@ export type ProviderProfilesUncheckedUpdateWithoutCartsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealsUncheckedUpdateManyWithoutProviderNestedInput
   orders?: Prisma.OrdersUncheckedUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderNestedInput
 }
 
 export type ProviderProfilesCreateWithoutOrdersInput = {
@@ -993,7 +991,7 @@ export type ProviderProfilesCreateWithoutOrdersInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutProviderProfilesInput
   meals?: Prisma.MealsCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsCreateNestedManyWithoutProviderInput
   carts?: Prisma.CartCreateNestedManyWithoutProviderInput
 }
 
@@ -1013,7 +1011,7 @@ export type ProviderProfilesUncheckedCreateWithoutOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   meals?: Prisma.MealsUncheckedCreateNestedManyWithoutProviderInput
-  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderProfilesInput
+  reviews?: Prisma.ReviewsUncheckedCreateNestedManyWithoutProviderInput
   carts?: Prisma.CartUncheckedCreateNestedManyWithoutProviderInput
 }
 
@@ -1049,7 +1047,7 @@ export type ProviderProfilesUpdateWithoutOrdersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProviderProfilesNestedInput
   meals?: Prisma.MealsUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUpdateManyWithoutProviderNestedInput
   carts?: Prisma.CartUpdateManyWithoutProviderNestedInput
 }
 
@@ -1069,7 +1067,7 @@ export type ProviderProfilesUncheckedUpdateWithoutOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   meals?: Prisma.MealsUncheckedUpdateManyWithoutProviderNestedInput
-  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderProfilesNestedInput
+  reviews?: Prisma.ReviewsUncheckedUpdateManyWithoutProviderNestedInput
   carts?: Prisma.CartUncheckedUpdateManyWithoutProviderNestedInput
 }
 
