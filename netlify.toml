@@ -1,0 +1,20 @@
+# netlify.toml
+
+[build]
+  # Command to build your app (if any). For plain Node.js, often "npm install"
+  command = "pnpm install && pnpm run build"
+  # Directory for deploy, for serverless functions this can be "functions"
+  functions = "netlify/functions"
+  publish = "public" # if you have a frontend build
+
+[dev]
+  # Local dev command
+  command = "netlify dev"
+  functions = "netlify/functions"
+  port = 8888
+
+[[redirects]]
+  # Redirect all requests to your Express function
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
