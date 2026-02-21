@@ -8,8 +8,8 @@
   publish = "public" # if you have a frontend build
 
 [dev]
-  # Local dev command
-  command = "netlify dev"
+  # Local dev command (run your Node server)
+  command = "pnpm dev"
   functions = "netlify/functions"
   port = 8888
 
